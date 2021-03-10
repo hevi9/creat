@@ -6,7 +6,7 @@ from typing import Iterable, Mapping, Optional
 
 from mk.index import Index
 from mk.source import Source
-from mk.types import Item, Runnable
+from mk.bases import Item, Runnable
 
 
 class RunCtx(Item, Runnable):
@@ -22,6 +22,7 @@ class RunCtx(Item, Runnable):
         self._cd = control.get("cd", None)
         self._env = control.get("env", {})
 
+    @abstractmethod
     def update(self, index: Index) -> None:
         pass
 

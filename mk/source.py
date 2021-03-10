@@ -4,7 +4,7 @@ import os
 from typing import TYPE_CHECKING, Iterable, List, Mapping, Optional
 
 from .location import Location
-from .types import Item, Runnable
+from .bases import Item, Runnable
 
 if TYPE_CHECKING:
     from .index import Index
