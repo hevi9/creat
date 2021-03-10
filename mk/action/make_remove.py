@@ -6,7 +6,6 @@ from typing import List
 
 from mk.action.make_base import RunCtx
 from mk.context import render
-from mk.index import Index
 from mk.source import Source
 from mk.ui import ui
 
@@ -30,7 +29,7 @@ class Remove(RunCtx):
             self.paths = params
         else:
             raise ValueError(
-                f"Invalid type {type(params)} for field 'remove' in {source.location}"
+                f"Invalid type {type(params)} for field 'remove' in {source._location}"
             )
 
     def run(self, context: dict) -> None:
@@ -51,6 +50,3 @@ class Remove(RunCtx):
                 else:
                     ui.talk("remove file {path}", path=path)
                     os.remove(path)
-
-    def update(self, index: Index) -> None:
-        pass

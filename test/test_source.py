@@ -27,7 +27,7 @@ def test_error_1(mkroots):
         for _ in make_sources_from_file_yaml(
             Location(path_root=path_root, path_rel=path_rel)
         ):
-            pass
+            ...
     msg = str(ex.value)
     assert "error1.mk.yaml" in msg
 

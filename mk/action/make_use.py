@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 class Use(RunCtx):
-    source: Source
+    _source: Source
     use_source_name: str
     _use_source: Optional[Source] = None
     use_context: dict

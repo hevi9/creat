@@ -3,8 +3,8 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Iterable, List, Mapping, Optional
 
-from .location import Location
 from .bases import Item, Runnable
+from .location import Location
 
 if TYPE_CHECKING:
     from .index import Index
@@ -34,12 +34,12 @@ class Source(Item, Runnable):
 
     @property
     def id(self) -> str:
-        return str(self.location.path_rel.parent / self.name).replace("\\", "/")
+        return str(self._location.path_rel.parent / self.name).replace("\\", "/")
 
     @property
     def dir(self) -> str:
         """ Directory where the source is defined. """
-        return str(self.location.path_abs.parent)
+        return str(self._location.path_abs.parent)
 
     def update(self, index: Index) -> None:
         for action in self.make:

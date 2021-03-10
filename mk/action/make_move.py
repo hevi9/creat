@@ -4,7 +4,6 @@ from shutil import move
 
 from mk.action.make_base import RunCtx
 from mk.context import render
-from mk.index import Index
 from mk.source import Source
 from mk.ui import ui
 
@@ -24,7 +23,7 @@ class Move(RunCtx):
             self.to_path = params["to"]
         else:
             raise ValueError(
-                f"Invalid type {type(params)} for 'move' in {source.location}"
+                f"Invalid type {type(params)} for 'move' in {source._location}"
             )
 
     def run(self, context: dict) -> None:
@@ -35,6 +34,3 @@ class Move(RunCtx):
         ui.talk(f"Move {from_path} to {to_path}")
         with self._run_context():
             move(str(from_path), to_path)  # str for mypy
-
-    def update(self, index: Index) -> None:
-        pass

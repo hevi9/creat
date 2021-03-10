@@ -4,7 +4,6 @@ from shutil import copytree
 
 from mk.action.make_base import RunCtx
 from mk.context import render
-from mk.index import Index
 from mk.source import Source
 
 
@@ -23,7 +22,7 @@ class Copy(RunCtx):
             self.path_to = params["to"]
         else:
             raise ValueError(
-                f"Invalid type {type(params)} for field 'copy' in {source.location}"
+                f"Invalid type {type(params)} for field 'copy' in {source._location}"
             )
 
     def run(self, context: dict) -> None:
@@ -38,6 +37,3 @@ class Copy(RunCtx):
                 ignore_dangling_symlinks=False,
                 dirs_exist_ok=False,
             )
-
-    def update(self, index: Index) -> None:
-        pass

@@ -1,47 +1,49 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional
+from typing import TYPE_CHECKING, Iterable, Mapping, Optional
 
 from .ex import ValidateError
 from .location import Location
+from .presentations import scalar_to_bool
 
 if TYPE_CHECKING:
     from .index import Index
 
 
-def scalar_to_bool(scalar: Any) -> bool:
-    if isinstance(scalar, bool):
-        return scalar
-    if isinstance(scalar, str):
-        value = str(scalar)
-        if value in ("True", "true"):
-            return True
-        return False
-    raise TypeError(f"{scalar} is not type of str or bool")
-
-
 class Item(metaclass=ABCMeta):
-    """ Base for control items. """
+    """ Base for structural control items. """
 
-    doc: Optional[str]
-    """ Description of the item. """
-
-    show: bool
-    """ Show item on UI. """
-
-    location: Location
-    """ File location of the item. """
+    _doc: Optional[str]
+    _show: bool
+    _location: Location
 
     def __init__(self, control: dict, location: Location):
         """ """
-        self.doc = control.get("doc", None)
-        self.show = scalar_to_bool(control.get("show", True))
-        self.location = location
+        self._doc = control.get("doc", None)
+        self._show = scalar_to_bool(control.get("show", True))
+        self._location = location
+
+    @property
+    def doc(self) -> Optional[str]:
+        """ Documentation of the item. """
+        return self._doc
+
+    @property
+    def show(self) -> bool:
+        """ Show item on UI. """
+        return self._show
+
+    @property
+    def location(self) -> Location:
+        """ File location of the item. """
+        return self._location
 
     def validate(self):
-        """ Validate item. Raise exception on error. """
-        raise ValidateError(f"Validation error on item in location {self.location}")
+        """Validate item.
+
+        :raises:  ValidateError on faulty item."""
+        raise ValidateError(f"Validation error on item in location {self._location}")
 
 
 class Updateable(metaclass=ABCMeta):
@@ -49,19 +51,22 @@ class Updateable(metaclass=ABCMeta):
 
     @abstractmethod
     def update(self, index: Index) -> None:
-        """ """
+        """ Update index on pass 2. """
 
 
 class Runnable(Updateable):
-    """ Runnable item. """
+    """ Runnable items. """
 
     @abstractmethod
     def run(self, context: dict) -> None:
         """ Run action, either direct or composite. """
 
-    @abstractmethod
     def programs(self) -> Iterable[str]:
         """ External programs used in this run context. """
+        return
+        # noinspection PyUnreachableCode
+        # pylint: disable=unreachable
+        yield  # NOSONAR
 
     @property
     @abstractmethod
