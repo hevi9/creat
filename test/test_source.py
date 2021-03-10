@@ -1,5 +1,3 @@
-# pylint: disable=unused-import
-
 import pytest
 from ruamel.yaml.scanner import ScannerError
 
