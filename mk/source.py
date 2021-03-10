@@ -46,9 +46,6 @@ class Source(Item, Runnable):
             action.update(index)
 
     def run(self, context: dict) -> None:
-        # new_context = {}
-        # for key in context.keys():
-        #     new_context[key] = render(context[key], context)
         for action in self.make:
             action.run(dict(context, source=self))
 

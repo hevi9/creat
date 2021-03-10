@@ -19,11 +19,13 @@ def test_action_cd(mkroot, capfd):
                 cd: ${target}
         """,
     )
+
     index = Index()
     update_index_from_roots(index, [mkroot.path_root], [])
     source = index.find("test/source/action-cd")
     context = make_root_context(target_name=str(target_area))
     run(source, context)
+
     out, _ = capfd.readouterr()
     out = out.strip()
     assert out == str(target_area)

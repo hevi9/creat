@@ -37,7 +37,9 @@ def find_mk_sources_from_roots(
 
 
 def update_index_from_roots(
-    index: Index, roots: Iterable[Path], ignore: Iterable[str]
+    index: Index,
+    roots: Iterable[Path],
+    ignore: Iterable[str],
 ) -> None:
     """Update index sources from given root paths. Ignore given
     ignore patterns in tree traversing.
