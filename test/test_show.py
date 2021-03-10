@@ -3,7 +3,7 @@ from mk.index import Index
 from mk.ui import ui
 
 
-def test_item_doc_and_show(mkroot):
+def test_item_show(mkroot):
     ui.is_verbose = False
     mkroot.have(
         "test/source/item_doc_and_show.mk.yaml",
