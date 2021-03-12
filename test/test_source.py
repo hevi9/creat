@@ -1,11 +1,11 @@
 import pytest
 from ruamel.yaml.scanner import ScannerError
 
+from mk.build import make_sources_from_file_yaml
 from mk.find import update_index_from_roots
 from mk.index import Index
 from mk.location import Location
 from mk.run import run
-from mk.build import make_sources_from_file_yaml
 from mk.ui import ui
 
 
