@@ -2,12 +2,12 @@ import shlex
 from pathlib import Path
 from shutil import copytree
 
-from mk.action.make_base import RunCtx
+from mk.action.bases import Action
 from mk.context import render
 from mk.source import Source
 
 
-class Copy(RunCtx):
+class Copy(Action):
 
     path_from: str
     path_to: str

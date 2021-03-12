@@ -2,13 +2,13 @@ import shlex
 from pathlib import Path
 from shutil import move
 
-from mk.action.make_base import RunCtx
+from mk.action.bases import Action
 from mk.context import render
 from mk.source import Source
 from mk.ui import ui
 
 
-class Move(RunCtx):
+class Move(Action):
 
     from_path: str
     to_path: str

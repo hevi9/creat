@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Iterable, Optional
 
-from mk.action.make_base import RunCtx
+from mk.action.bases import Action
 from mk.context import render
 from mk.run import run
 from mk.source import Source
@@ -11,7 +11,7 @@ if TYPE_CHECKING:
     from mk.index import Index
 
 
-class Use(RunCtx):
+class Use(Action):
     _source: Source
     use_source_name: str
     _use_source: Optional[Source] = None

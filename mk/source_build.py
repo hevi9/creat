@@ -4,12 +4,11 @@ from typing import Iterable
 
 import strictyaml  # type: ignore
 
-from mk.action.make_copy import Copy
-from mk.action.make_move import Move
-from mk.action.make_remove import Remove
-from mk.action.make_shell import Shell
-from mk.action.make_use import Use
-
+from .action.copy import Copy
+from .action.move import Move
+from .action.remove import Remove
+from .action.shell import Shell
+from .action.use import Use
 from .location import Location
 from .source import Source
 
@@ -34,7 +33,7 @@ def make_source_from_dict(item: dict, location: Location) -> Source:
         if isinstance(make_item, str):
             make_item = {"shell": make_item}
         elif isinstance(make_item, dict):
-            pass
+            pass  # NOSONAR
         else:
             raise TypeError(f"Invalid make item type {type(make_item)}")
         make_type = make_item.keys() & MAKE_ITEM_MAP.keys()

@@ -9,7 +9,7 @@ from mk.index import Index
 from mk.source import Source
 
 
-class RunCtx(Item, Runnable):
+class Action(Item, Runnable):
     """ Base implementation for make items. """
 
     _source: Source
