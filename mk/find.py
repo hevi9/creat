@@ -6,7 +6,7 @@ from typing import Iterable
 from .index import Index
 from .location import Location
 from .source import Source
-from .source_build import make_sources_from_file_yaml
+from .build import make_sources_from_file_yaml
 
 MK_GLOB = ("*.mk.yaml", "*.mk.yml")
 
