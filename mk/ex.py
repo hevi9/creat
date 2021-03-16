@@ -1,11 +1,15 @@
+""" mk related exceptions. """
+
 from mk.location import Location
 
 
 class MkError(Exception):
-    """ """
+    """ Base exception for mk excpetions. """
 
 
-class DuplicateSourceError(MkError):
+class MkDuplicateSourceError(MkError):
+    """ Duplicate source id exists. """
+
     location: Location
     id2: str
 
@@ -15,7 +19,9 @@ class DuplicateSourceError(MkError):
         self.id2 = id2
 
 
-class FieldError(MkError):
+class MkFieldError(MkError):
+    """ Error on item field definition. """
+
     location: Location
     field: str
 
@@ -25,5 +31,5 @@ class FieldError(MkError):
         self.field = field
 
 
-class ValidateError(MkError):
-    """ """
+class MkValidateError(MkError):
+    """ Error on validation. """

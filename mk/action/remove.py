@@ -1,8 +1,10 @@
+""" Remove file or tree action. """
+
 import os
 import stat
 from pathlib import Path
 from shutil import rmtree
-from typing import List
+from typing import Any, List, Mapping
 
 from mk.action.bases import Action
 from mk.context import render
@@ -17,6 +19,7 @@ def _remove_readonly(func, path, _):
 
 
 class Remove(Action):
+    """ Remove files or trees. """
 
     paths: List[str]
 
@@ -32,7 +35,7 @@ class Remove(Action):
                 f"Invalid type {type(params)} for field 'remove' in {source._location}"
             )
 
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         # eval
         paths = [Path(render(path, context)) for path in self.paths]
         # run

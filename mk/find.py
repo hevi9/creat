@@ -1,3 +1,7 @@
+""" Find mk roots and files from file system. """
+
+# TODO: move objects to build.py
+
 # pylint: disable=undefined-loop-variable
 
 from pathlib import Path
@@ -11,12 +15,16 @@ from .source import Source
 MK_GLOB = ("*.mk.yaml", "*.mk.yml")
 
 
-def find_mk_files(mkpath: Iterable[Path], ignore: Iterable[str]) -> Iterable[Location]:
+def find_mk_files(
+    mkpaths: Iterable[Path], ignores: Iterable[str]
+) -> Iterable[Location]:
+    """ Find mk files from mk paths, skipping ignores. """
+
     def traverse(path_rel):
         path_abs = root / path_rel
         if path_abs.is_dir():
             for entry in path_abs.glob("*"):
-                for ignore_glob in ignore:
+                for ignore_glob in ignores:
                     if entry.match("**/" + ignore_glob):
                         continue
                 yield from traverse(path_rel / entry.name)
@@ -25,14 +33,19 @@ def find_mk_files(mkpath: Iterable[Path], ignore: Iterable[str]) -> Iterable[Loc
                 if path_abs.match("**/" + glob):
                     yield Location(path_root=root, path_rel=path_rel)
 
-    for root in mkpath:
+    for root in mkpaths:
         yield from traverse(Path("."))
 
 
 def find_mk_sources_from_roots(
-    roots: Iterable[Path], ignore: Iterable[str]
+    mkroots: Iterable[Path],
+    ignores: Iterable[str],
 ) -> Iterable[Source]:
-    for location in find_mk_files(roots, ignore):
+    """Build sources from mk files in gives mk roots.
+
+    Top level function.
+    """
+    for location in find_mk_files(mkroots, ignores):
         yield from make_sources_from_file_yaml(location)
 
 
@@ -50,5 +63,5 @@ def update_index_from_roots(
     """
     for source in find_mk_sources_from_roots(roots, ignore):
         index.add_source(source)
-    for source in index.list():
+    for source in index.sources:
         source.update(index)

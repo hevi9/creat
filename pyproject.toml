@@ -18,6 +18,7 @@ strictyaml = "^1.2.0"
 colorama = "^0.4.4"
 rich = "^9.8.2"
 copier = "^5.1.0"
+typer = "^0.3.2"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^3.8.4"
@@ -44,17 +45,13 @@ build-backend = "poetry.masonry.api"
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 88
 disable = ["no-self-use",
-    "missing-function-docstring",
-    "missing-module-docstring",
-    "missing-class-docstring",
     "invalid-name",
     "subprocess-run-check",
-    "empty-docstring",
     "too-few-public-methods",
     "fixme",
     "broad-except",
     "unsubscriptable-object", # https://github.com/PyCQA/pylint/issues/3882
-    "duplicate-code", # no sense
+    "duplicate-code", # makes no sense
     "cyclic-import", # https://github.com/PyCQA/pylint/issues/3525
 ]
 

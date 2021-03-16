@@ -1,9 +1,12 @@
+""" Test finding mk files. """
+
 from pathlib import Path
 
 import mk.find
 
 
 def test_find_mk_files(mkroots):
+    """ Test find mk file in roots. """
     for location in mk.find.find_mk_files(
         [mkroots["base"]["."].path_root, mkroots["other"]["."].path_root], [".git"]
     ):
@@ -15,6 +18,7 @@ def test_find_mk_files(mkroots):
 
 
 def test_find_mk_sources_from_roots(mkroots):
+    """ Test find mk file in roots. """
     for source in mk.find.find_mk_sources_from_roots(
         [mkroots["base"]["."].path_root, mkroots["other"]["."].path_root], []
     ):

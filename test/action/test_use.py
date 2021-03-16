@@ -1,3 +1,5 @@
+""" Test use action. """
+
 from mk.find import update_index_from_roots
 from mk.index import Index
 from mk.run import run
@@ -5,6 +7,7 @@ from mk.ui import ui
 
 
 def test_source_make_use(mkroot, capfd):
+    """ Test source to use source. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_use.mk.yaml",

@@ -1,3 +1,5 @@
+""" Test source. """
+
 import pytest
 from ruamel.yaml.scanner import ScannerError
 
@@ -10,6 +12,7 @@ from mk.ui import ui
 
 
 def test_primary_source(mkroots):
+    """ Test source basic data. """
     path_root, path_rel = mkroots["base"]["primary.mk.yaml"]
     for source in make_sources_from_file_yaml(
         Location(path_root=path_root, path_rel=path_rel)
@@ -20,6 +23,7 @@ def test_primary_source(mkroots):
 
 
 def test_error_1(mkroots):
+    """ Test errorful source, """
     path_root, path_rel = mkroots["errors"]["error1.mk.yaml"]
     with pytest.raises(ScannerError) as ex:
         for _ in make_sources_from_file_yaml(
@@ -31,6 +35,7 @@ def test_error_1(mkroots):
 
 
 def test_source_run(mkroot, capfd):
+    """ Test source run. """
     ui.is_verbose = False
     mkroot.have(
         "sample/.mk.yaml",
@@ -53,6 +58,7 @@ def test_source_run(mkroot, capfd):
 
 
 def test_source_make_render(mkroot, capfd):
+    """ Test source vars render. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_render.mk.yaml",
@@ -98,6 +104,7 @@ def test_source_make_render(mkroot, capfd):
 
 
 def test_item_doc_and_show(mkroot):
+    """ Test doc and show in source. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/item_doc_and_show.mk.yaml",

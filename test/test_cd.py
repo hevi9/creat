@@ -1,3 +1,5 @@
+""" Test change directory in item ."""
+
 from mk.context import make_root_context
 from mk.find import update_index_from_roots
 from mk.index import Index
@@ -5,7 +7,8 @@ from mk.run import run
 from mk.ui import ui
 
 
-def test_action_cd(mkroot, capfd):
+def test_item_cd(mkroot, capfd):
+    """ Test item cd. """
     ui.is_verbose = False
     root, rel = mkroot.have_dir("target-area")
     target_area = root / rel

@@ -1,7 +1,9 @@
+""" Source implementation. """
+
 from __future__ import annotations
 
 import os
-from typing import TYPE_CHECKING, Iterable, List, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Iterable, List, Mapping, Optional
 
 from .bases import Item, Runnable
 from .location import Location
@@ -11,6 +13,7 @@ if TYPE_CHECKING:
 
 
 class Source(Item, Runnable):
+    """ Source definitions. """
 
     name: str
     """ Name of the source. """
@@ -34,6 +37,7 @@ class Source(Item, Runnable):
 
     @property
     def id(self) -> str:
+        """ Identifier of the source. """
         return str(self._location.path_rel.parent / self.name).replace("\\", "/")
 
     @property
@@ -45,7 +49,7 @@ class Source(Item, Runnable):
         for action in self.make:
             action.update(index)
 
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         for action in self.make:
             action.run(dict(context, source=self))
 

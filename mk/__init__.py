@@ -1,3 +1,6 @@
+""" mk package common functions. """
+
+
 def version() -> str:
     """ Get package version. """
     # pylint: disable=import-outside-toplevel

@@ -1,3 +1,5 @@
+""" Test removing files or trees. """
+
 from mk.context import make_root_context
 from mk.find import update_index_from_roots
 from mk.index import Index
@@ -6,6 +8,7 @@ from mk.ui import ui
 
 
 def test_source_make_remove_tree_render_list(mkroot):
+    """ Test tree removal with render var. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",
@@ -32,6 +35,7 @@ def test_source_make_remove_tree_render_list(mkroot):
 
 
 def test_source_make_remove_file(mkroot):
+    """ Test file removal. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_remove_file.mk.yaml",
@@ -53,6 +57,7 @@ def test_source_make_remove_file(mkroot):
 
 
 def test_source_make_remove_tree(mkroot):
+    """ Test tree removal. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",
@@ -77,6 +82,7 @@ def test_source_make_remove_tree(mkroot):
 
 
 def test_source_make_remove_tree_render(mkroot):
+    """ Test tree removal with render. """
     ui.is_verbose = False
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",

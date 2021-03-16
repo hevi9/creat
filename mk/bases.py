@@ -1,9 +1,11 @@
+""" mk base objects. """
+
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Iterable, Mapping, Optional
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional
 
-from .ex import ValidateError
+from .ex import MkValidateError
 from .location import Location
 from .presentations import scalar_to_bool
 
@@ -43,7 +45,7 @@ class Item(metaclass=ABCMeta):
         """Validate item.
 
         :raises:  ValidateError on faulty item."""
-        raise ValidateError(f"Validation error on item in location {self._location}")
+        raise MkValidateError(f"Validation error on item in location {self._location}")
 
 
 class Updateable(metaclass=ABCMeta):
@@ -58,7 +60,7 @@ class Runnable(Updateable):
     """ Runnable items. """
 
     @abstractmethod
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         """ Run action, either direct or composite. """
 
     def programs(self) -> Iterable[str]:

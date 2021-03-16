@@ -1,3 +1,5 @@
+""" mk CLI. """
+
 # pylint: disable=redefined-builtin
 # pylint: disable=unexpected-keyword-arg, no-value-for-parameter
 
@@ -56,7 +58,7 @@ def new(ctx, source_name, target_name):
         update_index_from_roots(index, paths, [])
         ui.talk(
             "Have {num} sources in {paths}",
-            num=len(index.source_map),
+            num=len(index.sources),
             paths=",".join(str(p) for p in paths),
         )
         source = index.find(source_name)
@@ -83,13 +85,13 @@ def list(ctx):
         update_index_from_roots(index, paths, [])
         ui.talk(
             "Have {num} sources in {paths}",
-            num=len(index.source_map),
+            num=len(index.sources),
             paths=",".join(str(p) for p in paths),
         )
         table = Table(box=None)
         table.add_column("Source")
         table.add_column("Description")
-        for source in sorted(index.list(), key=lambda s: s.id2):
+        for source in sorted(index.sources, key=lambda s: s.id2):
             if source.show:
                 table.add_row(source.id, source.doc)
         console.print(table)

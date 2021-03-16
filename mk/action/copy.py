@@ -1,6 +1,9 @@
+""" Action to copy tree or file. """
+
 import shlex
 from pathlib import Path
 from shutil import copytree
+from typing import Any, Mapping
 
 from mk.action.bases import Action
 from mk.context import render
@@ -8,6 +11,7 @@ from mk.source import Source
 
 
 class Copy(Action):
+    """ Action to copy tree or file. """
 
     path_from: str
     path_to: str
@@ -25,7 +29,7 @@ class Copy(Action):
                 f"Invalid type {type(params)} for field 'copy' in {source._location}"
             )
 
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         path_from = Path(render(self.path_from, context))
         path_to = Path(render(self.path_to, context))
         with self._run_context():

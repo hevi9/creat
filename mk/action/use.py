@@ -1,6 +1,8 @@
+""" Use other source action. """
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable, Optional
+from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional
 
 from mk.action.bases import Action
 from mk.context import render
@@ -12,6 +14,8 @@ if TYPE_CHECKING:
 
 
 class Use(Action):
+    """ Use other source action. """
+
     _source: Source
     use_source_name: str
     _use_source: Optional[Source] = None
@@ -26,7 +30,7 @@ class Use(Action):
     def update(self, index: Index) -> None:
         self.use_source = index.find_from(self.use_source_name, self.source)
 
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         if not self.use_source:
             raise RuntimeError("use_source is not set")
         use_context = {k: render(v, context) for k, v in self.use_context.items()}
@@ -43,6 +47,7 @@ class Use(Action):
 
     @property
     def use_source(self) -> Optional[Source]:
+        """ Source to use. """
         return self._use_source
 
     @use_source.setter

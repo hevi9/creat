@@ -1,8 +1,10 @@
+""" mk action base objects. """
+
 import os
 from abc import abstractmethod
 from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterable, Mapping, Optional
+from typing import Any, Iterable, Mapping, Optional
 
 from mk.bases import Item, Runnable
 from mk.index import Index
@@ -53,5 +55,5 @@ class Action(Item, Runnable):
             yield None, self.env
 
     @abstractmethod
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         pass

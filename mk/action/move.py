@@ -1,6 +1,9 @@
+""" Move operation. """
+
 import shlex
 from pathlib import Path
 from shutil import move
+from typing import Any, Mapping
 
 from mk.action.bases import Action
 from mk.context import render
@@ -9,6 +12,7 @@ from mk.ui import ui
 
 
 class Move(Action):
+    """ Move file or tree action. """
 
     from_path: str
     to_path: str
@@ -26,7 +30,7 @@ class Move(Action):
                 f"Invalid type {type(params)} for 'move' in {source._location}"
             )
 
-    def run(self, context: dict) -> None:
+    def run(self, context: Mapping[str, Any]) -> None:
         from_path = Path(render(self.from_path, context))
         to_path = Path(render(self.to_path, context))
         if to_path.exists():

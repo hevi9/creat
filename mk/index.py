@@ -1,35 +1,45 @@
+""" Index to contain and access sources. """
+
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Iterable
+from typing import TYPE_CHECKING, Dict, Iterable
 
-from .ex import DuplicateSourceError
+from .ex import MkDuplicateSourceError
 
 if TYPE_CHECKING:
     from .source import Source
 
 
 class Index:
-    def __init__(self):
-        self._source_map = {}
+    """ Index to contain and access sources. """
 
-    @property
-    def source_map(self) -> dict:
-        return self._source_map
+    _sources: Dict[str, Source]
+
+    def __init__(self):
+        self._sources = {}
 
     def add_source(self, source: Source) -> None:
-        if self._source_map.get(source.id):
-            raise DuplicateSourceError(
+        """ Add source to index. """
+        if self._sources.get(source.id):
+            raise MkDuplicateSourceError(
                 "already exists", id2=source.id, location=source.location
             )
-        self._source_map[source.id] = source
+        self._sources[source.id] = source
 
-    def list(self) -> Iterable[Source]:
-        return self._source_map.values()
+    @property
+    def sources(self) -> Iterable[Source]:
+        """ Sources in index. """
+        return self._sources.values()
 
     def find(self, source_id: str) -> Source:
-        return self._source_map[source_id]
+        """ Find source by name. """
+        return self._sources[source_id]
 
     def find_from(self, use_source_name: str, from_source: Source) -> Source:
+        """Find source starting from given source.
+
+        Relative lookup.
+        """
         try:
             return self.find(use_source_name)
         except KeyError:

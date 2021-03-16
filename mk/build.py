@@ -1,3 +1,5 @@
+""" Building source and action structure from .mk.yaml files. """
+
 from __future__ import annotations
 
 from typing import Iterable
@@ -22,7 +24,7 @@ MAKE_ITEM_MAP = {
 
 
 def make_source_from_dict(item: dict, location: Location) -> Source:
-    """ """
+    """ Make source from given source control dict. """
     source = Source(
         name=item["source"],
         control=item,
@@ -51,6 +53,7 @@ def make_source_from_dict(item: dict, location: Location) -> Source:
 
 
 def make_sources_from_file_yaml(location: Location) -> Iterable[Source]:
+    """ Make source item from yaml file. """
     with location.path_abs.open() as fo:
         text = fo.read()
         data = strictyaml.load(text, label=str(location.path_abs)).data
