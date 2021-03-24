@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "mk"
-version = "0.6.6"
+version = "0.6.7"
 description = "CLI frontend for templating"
 authors = ["Your Name <you@example.com>"]
-license = "MIT"
+license = "LGPL"
 packages = [
     { include = "mk" }
 ]
@@ -11,49 +11,41 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.8"
 Jinja2 = "^2.11.2"
-click = "^7.1.2"
-python-decouple = "^3.3"
 loguru = "^0.5.3"
 strictyaml = "^1.2.0"
-colorama = "^0.4.4"
 rich = "^9.8.2"
 copier = "^5.1.0"
 typer = "^0.3.2"
+colorama = "^0.4.4"
+shellingham = "^1.4.0"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.8.4"
 pylint = "^2.5.3"
 pytest = "^6.2.1"
 safety = "^1.10.0"
 black = "^20.8b1"
-pycrunch-engine = "^1.2.1"
 aiohttp = "^3.7.3"
 aiohttp_cors = "^0.7.0"
-interrogate = "^1.3.2"
 bandit = "^1.7.0"
 isort = "^4.2.5"
 pre-commit = "^2.9.3"
 mypy = "^0.800"
+pytest-cov = "^2.11.1"
+pytest-timeout = "^1.4.2"
+pytest-xprocess = "^0.17.1"
+Sphinx = "^3.5.2"
+sphinx-rtd-theme = "^0.5.1"
+doit = "^0.33.1"
 
 [tool.poetry.scripts]
-mk = 'mk.__main__:cli'
+mk = 'mk.__main__:app'
 
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
 
-[tool.pylint.'MESSAGES CONTROL']
-max-line-length = 88
-disable = ["no-self-use",
-    "invalid-name",
-    "subprocess-run-check",
-    "too-few-public-methods",
-    "fixme",
-    "broad-except",
-    "unsubscriptable-object", # https://github.com/PyCQA/pylint/issues/3882
-    "duplicate-code", # makes no sense
-    "cyclic-import", # https://github.com/PyCQA/pylint/issues/3525
-]
+[tool.black]
+line-length = 100
 
 [tool.isort]
 profile = "black"

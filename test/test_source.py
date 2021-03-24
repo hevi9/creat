@@ -8,15 +8,12 @@ from mk.find import update_index_from_roots
 from mk.index import Index
 from mk.location import Location
 from mk.run import run
-from mk.ui import ui
 
 
 def test_primary_source(mkroots):
     """ Test source basic data. """
     path_root, path_rel = mkroots["base"]["primary.mk.yaml"]
-    for source in make_sources_from_file_yaml(
-        Location(path_root=path_root, path_rel=path_rel)
-    ):
+    for source in make_sources_from_file_yaml(Location(path_root=path_root, path_rel=path_rel)):
         assert source.name in ("primary_file", "other_source", "combined")
         assert str(source.location.path_abs).endswith("primary.mk.yaml")
         assert isinstance(source.make, list)
@@ -26,9 +23,7 @@ def test_error_1(mkroots):
     """ Test errorful source, """
     path_root, path_rel = mkroots["errors"]["error1.mk.yaml"]
     with pytest.raises(ScannerError) as ex:
-        for _ in make_sources_from_file_yaml(
-            Location(path_root=path_root, path_rel=path_rel)
-        ):
+        for _ in make_sources_from_file_yaml(Location(path_root=path_root, path_rel=path_rel)):
             ...
     msg = str(ex.value)
     assert "error1.mk.yaml" in msg
@@ -36,7 +31,6 @@ def test_error_1(mkroots):
 
 def test_source_run(mkroot, capfd):
     """ Test source run. """
-    ui.is_verbose = False
     mkroot.have(
         "sample/.mk.yaml",
         """
@@ -53,13 +47,12 @@ def test_source_run(mkroot, capfd):
     context = {}
     run(source, context)
     out, _ = capfd.readouterr()
-    lines = out.split()
-    assert lines == ["testing1", "testing2", "testing3"]
+    for check in ["testing1", "testing2", "testing3"]:
+        assert check in out
 
 
 def test_source_make_render(mkroot, capfd):
     """ Test source vars render. """
-    ui.is_verbose = False
     mkroot.have(
         "test/source/make_render.mk.yaml",
         """
@@ -92,20 +85,19 @@ def test_source_make_render(mkroot, capfd):
     source = index.find("test/source/super-source")
     run(source, context)
     out, _ = capfd.readouterr()
-    lines = out.split()
-    assert lines == [
+    for check in [
         "super-source",
         "target-dir",
         "sub-source-frontend",
         "target-dir/frontend",
         "sub-source-backend",
         "target-dir/backend",
-    ]
+    ]:
+        assert check in out
 
 
 def test_item_doc_and_show(mkroot):
     """ Test doc and show in source. """
-    ui.is_verbose = False
     mkroot.have(
         "test/source/item_doc_and_show.mk.yaml",
         """

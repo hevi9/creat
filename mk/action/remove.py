@@ -6,10 +6,12 @@ from pathlib import Path
 from shutil import rmtree
 from typing import Any, List, Mapping
 
+from mk import get_console
 from mk.action.bases import Action
 from mk.context import render
 from mk.source import Source
-from mk.ui import ui
+
+_console = get_console()
 
 
 def _remove_readonly(func, path, _):
@@ -44,12 +46,12 @@ class Remove(Action):
             if len(str(path)) < 3:
                 raise ValueError(f"don't remove path {path}")
             if not path.exists():
-                ui.talk("{path} does not exists, no op", path=path)
+                _console.print(f"{path} does not exists, no op")
                 continue
             with self._run_context():
                 if path.is_dir():
-                    ui.talk("remove tree {path}", path=path)
+                    _console.print(f"remove tree {path}")
                     rmtree(path, onerror=_remove_readonly)
                 else:
-                    ui.talk("remove file {path}", path=path)
+                    _console.print(f"remove file {path}")
                     os.remove(path)

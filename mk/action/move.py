@@ -5,10 +5,12 @@ from pathlib import Path
 from shutil import move
 from typing import Any, Mapping
 
+from mk import get_console
 from mk.action.bases import Action
 from mk.context import render
 from mk.source import Source
-from mk.ui import ui
+
+_console = get_console()
 
 
 class Move(Action):
@@ -26,15 +28,13 @@ class Move(Action):
             self.from_path = params["from"]
             self.to_path = params["to"]
         else:
-            raise ValueError(
-                f"Invalid type {type(params)} for 'move' in {source._location}"
-            )
+            raise ValueError(f"Invalid type {type(params)} for 'move' in {source._location}")
 
     def run(self, context: Mapping[str, Any]) -> None:
         from_path = Path(render(self.from_path, context))
         to_path = Path(render(self.to_path, context))
         if to_path.exists():
             raise RuntimeError(f"{to_path} exists on 'move'")
-        ui.talk(f"Move {from_path} to {to_path}")
+        _console.print(f"Move {from_path} to {to_path}")
         with self._run_context():
             move(str(from_path), to_path)  # str for mypy

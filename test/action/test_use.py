@@ -3,12 +3,10 @@
 from mk.find import update_index_from_roots
 from mk.index import Index
 from mk.run import run
-from mk.ui import ui
 
 
 def test_source_make_use(mkroot, capfd):
     """ Test source to use source. """
-    ui.is_verbose = False
     mkroot.have(
         "test/source/make_use.mk.yaml",
         """
@@ -31,5 +29,5 @@ def test_source_make_use(mkroot, capfd):
     context = {}
     run(source, context)
     out, _ = capfd.readouterr()
-    lines = out.split()
-    assert lines == ["sub-source-1", "sub-source-2", "super-source"]
+    for check in ["sub-source-1", "sub-source-2", "super-source"]:
+        assert check in out

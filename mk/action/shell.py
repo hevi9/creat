@@ -3,10 +3,12 @@
 import subprocess  # nosec
 from typing import Any, Mapping
 
+from mk import get_console
 from mk.action.bases import Action
 from mk.context import render
 from mk.source import Source
-from mk.ui import ui
+
+_console = get_console()
 
 
 class Shell(Action):
@@ -18,8 +20,8 @@ class Shell(Action):
 
     def run(self, context: Mapping[str, Any]):
         cmd_text = render(self.cmd_text, context)
-        ui.run("{cmd}", cmd=cmd_text)
-        subprocess.run(
+        _console.print(f"{cmd_text}")
+        subprocess.run(  # pylint: disable=subprocess-run-check
             cmd_text,
             shell=True,  # nosec
             cwd=render(self.cd, context) if self.cd else None,

@@ -21,9 +21,7 @@ class Index:
     def add_source(self, source: Source) -> None:
         """ Add source to index. """
         if self._sources.get(source.id):
-            raise MkDuplicateSourceError(
-                "already exists", id2=source.id, location=source.location
-            )
+            raise MkDuplicateSourceError("already exists", id2=source.id, location=source.location)
         self._sources[source.id] = source
 
     @property

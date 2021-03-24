@@ -6,13 +6,11 @@ from mk.context import make_root_context
 from mk.find import update_index_from_roots
 from mk.index import Index
 from mk.run import run
-from mk.ui import ui
 
 
 @pytest.mark.skip(reason="TODO")
 def test_source_make_copy_file(mkroot):
     """ Test copy a file. """
-    ui.is_verbose = False
     mkroot.have(
         "test/source/make_copy.mk.yaml",
         """
@@ -28,7 +26,6 @@ def test_source_make_copy_file(mkroot):
 
 def test_source_make_copy_tree(mkroot):
     """ Test copy a tree. """
-    ui.is_verbose = False
     mkroot.have(
         "test/source/make_copy_tree.mk.yaml",
         """

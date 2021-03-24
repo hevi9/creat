@@ -15,9 +15,7 @@ from .source import Source
 MK_GLOB = ("*.mk.yaml", "*.mk.yml")
 
 
-def find_mk_files(
-    mkpaths: Iterable[Path], ignores: Iterable[str]
-) -> Iterable[Location]:
+def find_mk_files(mkpaths: Iterable[Path], ignores: Iterable[str]) -> Iterable[Location]:
     """ Find mk files from mk paths, skipping ignores. """
 
     def traverse(path_rel):

@@ -39,11 +39,7 @@ class Use(Action):
     def programs(self) -> Iterable[str]:
         if not self.use_source:
             raise ValueError(".use_source is not updated")
-        return [
-            program
-            for runnable in self.use_source.make
-            for program in runnable.programs()
-        ]
+        return [program for runnable in self.use_source.make for program in runnable.programs()]
 
     @property
     def use_source(self) -> Optional[Source]:

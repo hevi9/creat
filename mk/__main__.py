@@ -1,104 +1,113 @@
 """ mk CLI. """
 
-# pylint: disable=redefined-builtin
-# pylint: disable=unexpected-keyword-arg, no-value-for-parameter
-
-
-import sys
 from pathlib import Path
+from typing import List
 
-import click
+import typer
+from rich.console import Console
 from rich.table import Table
 
+from mk.context import make_root_context
+
+from . import get_console, setup_logger
 from .find import update_index_from_roots
 from .index import Index
 from .run import run
-from .ui import console, ui
 from .validate import validate
 
+app = typer.Typer()
 
-@click.group()
-@click.option(
-    "--verbose",
-    type=click.BOOL,
-    default=True,
-    help="Show verbose messages.",
-    show_default=True,
-)
-@click.option(
-    "paths",
-    "--path",
-    default=[Path("~").expanduser() / ".mkroot"],
-    multiple=True,
-    envvar="MKPATH",
-    type=click.Path(),
-    help="""
-        Path(s) to find sources. Can be given multiple times. Environment
-        variable MKPATH can be used also to define source paths
-    """,
-    show_default=True,
-)
-@click.pass_context
-def cli(ctx, verbose, paths):
-    """ TODO: cli description """
-    ctx.ensure_object(dict)
-    ui.is_verbose = verbose
-    ctx.obj["paths"] = paths
+_paths: List[Path]
+
+_console: Console
 
 
-@cli.command()
-@click.argument("source_name")
-@click.argument("target_name")
-@click.pass_context
-def new(ctx, source_name, target_name):
+def _tidy(text: str) -> str:
+    return " ".join(text.split())
+
+
+def _print_status(index, paths):
+    pass
+    # ui.talk(
+    #     "Have {num} sources in {paths}",
+    #     num=len(index.sources),
+    #     paths=",".join(str(p) for p in paths),
+    # )
+
+
+@app.callback()
+def main(
+    debug: bool = typer.Option(
+        False,
+        help="Enable debug logging.",
+    ),
+    paths: List[Path] = typer.Option(
+        [Path("~").expanduser() / ".mkroot"],
+        envvar="MKPATH",
+        help=_tidy(
+            """Path(s) to find sources. Can be given multiple times.
+            Environment variable MKPATH can be used also to
+            define source paths """
+        ),
+    ),
+):
+    """ Makes """
+    global _paths, _console
+    _paths = paths
+    _console = get_console()
+    setup_logger(level="TRACE" if debug else "INFO")
+
+
+@app.command()
+def new(
+    source_name: str = typer.Argument(
+        ...,
+        help="Source name.",
+    ),
+    target_name: str = typer.Argument(
+        ...,
+        help="Target directory or file name. May not exists.",
+    ),
+):
     """ Make new target from given source. """
-    paths = ctx.obj["paths"]
     try:
         index = Index()
-        update_index_from_roots(index, paths, [])
-        ui.talk(
-            "Have {num} sources in {paths}",
-            num=len(index.sources),
-            paths=",".join(str(p) for p in paths),
-        )
+        update_index_from_roots(index, _paths, [])
+        _print_status(index, _paths)
         source = index.find(source_name)
-        context = {
-            "name": target_name,
-            "target": target_name,
-        }
+        context = make_root_context(target_name)
         validate(context)
         run(source, context)
     except KeyError as ex:
-        ui.error_exit("Source not found {ex}", ex=ex)
+        _console.print_exception()
+        raise typer.Exit(1) from ex
     except Exception as ex:
-        console.print_exception()
-        ui.error_exit("{ex}", ex=ex)
+        _console.print_exception()
+        raise typer.Exit(1) from ex
 
 
-@cli.command()
-@click.pass_context
-def list(ctx):
+@app.command()
+def list():  # pylint: disable=redefined-builtin
     """ List sources. """
-    paths = ctx.obj["paths"]
     try:
         index = Index()
-        update_index_from_roots(index, paths, [])
-        ui.talk(
-            "Have {num} sources in {paths}",
-            num=len(index.sources),
-            paths=",".join(str(p) for p in paths),
-        )
+        update_index_from_roots(index, _paths, [])
+        # ui.talk(
+        #     "Have {num} sources in {paths}",
+        #     num=len(index.sources),
+        #     paths=",".join(str(p) for p in CFG.paths),
+        # )
         table = Table(box=None)
         table.add_column("Source")
         table.add_column("Description")
-        for source in sorted(index.sources, key=lambda s: s.id2):
+        for source in sorted(index.sources, key=lambda s: s.id):
             if source.show:
                 table.add_row(source.id, source.doc)
-        console.print(table)
+        _console.print(table)
     except Exception as ex:
-        ui.error_exit("{ex}", ex=ex)
+        _console.print_exception()
+        raise typer.Exit(1) from ex
 
 
 if __name__ == "__main__":
-    # pylint: disable=unexpected-keyword-arg, no-value-for-parameter
-    cli(prog_name="{} -m {}".format(sys.executable, __package__))
+    app()
