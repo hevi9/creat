@@ -41,7 +41,7 @@ def main(
         False,
         help="Enable debug logging.",
     ),
-    paths: List[Path] = typer.Option(
+    path: List[Path] = typer.Option(
         [Path("~").expanduser() / ".mkroot"],
         envvar="MKPATH",
         help=_tidy(
@@ -53,7 +53,7 @@ def main(
 ):
     """ Makes """
     global _paths, _console
-    _paths = paths
+    _paths = path
     _console = get_console()
     setup_logger(level="TRACE" if debug else "INFO")
 
