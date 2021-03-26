@@ -27,6 +27,7 @@ jobs:
 
     - name: Install dependencies with poetry
       run: |
+        python -m pip install --upgrade pip
         python -m pip install poetry
         poetry install
 
@@ -38,18 +39,6 @@ jobs:
       run: |
         poetry run isort --check-only --recursive .
 
-    - name: Check code with pylint
-      run: |
-        poetry run pylint mk test
-
-    - name: Check code typing with mypy
-      run: |
-        poetry run mypy --ignore-missing-imports .
-
-    - name: Test with pytest
-      run: |
-        poetry run pytest
-
     - name: Check package vulnerabilities with safety
       run: |
         poetry run safety check
@@ -57,3 +46,15 @@ jobs:
     - name: Check code vulnerabilities with bandit
       run: |
         poetry run bandit -ll -ii -r .
+
+    - name: Check code with pylint
+      run: |
+        poetry run pylint mk tests
+
+    - name: Check code typing with mypy
+      run: |
+        poetry run mypy --ignore-missing-imports .
+
+    - name: Test with pytest
+      run: |
+        poetry run pytest .
