@@ -18,6 +18,7 @@ copier = "^5.1.0"
 typer = "^0.3.2"
 colorama = "^0.4.4"
 shellingham = "^1.4.0"
+watchgod = "^0.7"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.5.3"

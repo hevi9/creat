@@ -15,6 +15,9 @@ from .index import Index
 from .run import run
 from .validate import validate
 
+# from watchgod import awatch
+
+
 app = typer.Typer()
 
 _paths: List[Path]
@@ -60,11 +63,11 @@ def main(
 
 @app.command()
 def new(
-    source_name: str = typer.Argument(
+    source: str = typer.Argument(
         ...,
         help="Source name.",
     ),
-    target_name: str = typer.Argument(
+    target: str = typer.Argument(
         ...,
         help="Target directory or file name. May not exists.",
     ),
@@ -74,10 +77,10 @@ def new(
         index = Index()
         update_index_from_roots(index, _paths, [])
         _print_status(index, _paths)
-        source = index.find(source_name)
-        context = make_root_context(target_name)
+        source_use = index.find(source)
+        context = make_root_context(target)
         validate(context)
-        run(source, context)
+        run(source_use, context)
     except KeyError as ex:
         _console.print_exception()
         raise typer.Exit(1) from ex
@@ -107,6 +110,17 @@ def list():  # pylint: disable=redefined-builtin
     except Exception as ex:
         _console.print_exception()
         raise typer.Exit(1) from ex
+
+
+@app.command()
+def develop(
+    source: str = typer.Argument(
+        ...,
+        help="Source to develop",
+    )
+):
+    """ Develop sources. """
+    # awatch()
 
 
 if __name__ == "__main__":
