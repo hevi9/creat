@@ -1,9 +1,9 @@
 """ Test change directory in item ."""
 
-from mk.context import make_root_context
-from mk.find import update_index_from_roots
-from mk.index import Index
-from mk.run import run
+from creat.context import make_root_context
+from creat.find import update_index_from_roots
+from creat.index import Index
+from creat.run import run
 
 
 def test_item_cd(mkroot, capfd):

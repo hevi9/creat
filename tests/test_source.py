@@ -3,11 +3,11 @@
 import pytest
 from ruamel.yaml.scanner import ScannerError
 
-from mk.build import make_sources_from_file_yaml
-from mk.find import update_index_from_roots
-from mk.index import Index
-from mk.location import Location
-from mk.run import run
+from creat.build import make_sources_from_file_yaml
+from creat.find import update_index_from_roots
+from creat.index import Index
+from creat.location import Location
+from creat.run import run
 
 
 def test_primary_source(mkroots):

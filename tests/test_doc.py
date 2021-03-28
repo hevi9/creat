@@ -1,7 +1,7 @@
 """ Test doc info. """
 
-from mk.find import update_index_from_roots
-from mk.index import Index
+from creat.find import update_index_from_roots
+from creat.index import Index
 
 
 def test_item_doc(mkroot):

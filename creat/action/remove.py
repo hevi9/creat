@@ -6,10 +6,10 @@ from pathlib import Path
 from shutil import rmtree
 from typing import Any, List, Mapping
 
-from mk import get_console
-from mk.action.bases import Action
-from mk.context import render
-from mk.source import Source
+from creat import get_console
+from creat.action.bases import Action
+from creat.context import render
+from creat.source import Source
 
 _console = get_console()
 

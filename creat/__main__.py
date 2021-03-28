@@ -7,7 +7,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from mk.context import make_root_context
+from creat.context import make_root_context
 
 from . import get_console, setup_logger
 from .find import update_index_from_roots

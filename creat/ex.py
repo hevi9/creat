@@ -1,6 +1,6 @@
 """ mk related exceptions. """
 
-from mk.location import Location
+from creat.location import Location
 
 
 class MkError(Exception):

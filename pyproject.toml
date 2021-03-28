@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "mk"
+name = "creat"
 version = "0.6.7"
 description = "CLI frontend for templating"
 authors = ["Your Name <you@example.com>"]
 license = "LGPL"
 packages = [
-    { include = "mk" }
+    { include = "creat" }
 ]
 
 [tool.poetry.dependencies]
@@ -39,7 +39,7 @@ sphinx-rtd-theme = "^0.5.1"
 doit = "^0.33.1"
 
 [tool.poetry.scripts]
-mk = 'mk.__main__:app'
+creat = 'creat.__main__:app'
 
 [build-system]
 requires = ["poetry>=0.12"]

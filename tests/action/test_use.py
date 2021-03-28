@@ -1,8 +1,8 @@
 """ Test use action. """
 
-from mk.find import update_index_from_roots
-from mk.index import Index
-from mk.run import run
+from creat.find import update_index_from_roots
+from creat.index import Index
+from creat.run import run
 
 
 def test_source_make_use(mkroot, capfd):
