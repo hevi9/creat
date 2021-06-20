@@ -1,13 +1,13 @@
 """ Test change directory in item ."""
 
-from creat.context import make_root_context
+from creat.contexts import make_root_context
 from creat.find import update_index_from_roots
 from creat.index import Index
 from creat.run import run
 
 
 def test_item_cd(mkroot, capfd):
-    """ Test item cd. """
+    """Test item cd."""
     root, rel = mkroot.have_dir("target-area")
     target_area = root / rel
     mkroot.have(

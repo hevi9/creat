@@ -8,20 +8,20 @@ from typing import Any, List, Mapping
 
 from creat import get_console
 from creat.action.bases import Action
-from creat.context import render
+from creat.contexts import render
 from creat.source import Source
 
 _console = get_console()
 
 
 def _remove_readonly(func, path, _):
-    """ Clear the readonly bit and reattempt the removal. """
+    """Clear the readonly bit and reattempt the removal."""
     os.chmod(path, stat.S_IWRITE)
     func(path)
 
 
 class Remove(Action):
-    """ Remove files or trees. """
+    """Remove files or trees."""
 
     paths: List[str]
 

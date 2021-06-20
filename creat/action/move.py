@@ -7,14 +7,14 @@ from typing import Any, Mapping
 
 from creat import get_console
 from creat.action.bases import Action
-from creat.context import render
+from creat.contexts import render
 from creat.source import Source
 
 _console = get_console()
 
 
 class Move(Action):
-    """ Move file or tree action. """
+    """Move file or tree action."""
 
     from_path: str
     to_path: str
