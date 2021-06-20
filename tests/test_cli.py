@@ -9,7 +9,7 @@ runner = CliRunner()
 
 @pytest.mark.skip(reason="Not ready yet.")
 def test_cli_new(mkroot, tmp_path):
-    """ Test new command functionality. """
+    """Test new command functionality."""
     root, _ = mkroot.have(
         "source.mk.yaml",
         """
@@ -26,11 +26,25 @@ def test_cli_new(mkroot, tmp_path):
         ],
     )
     assert r.exit_code == 0, r.stdout
-    # assert "" in r.stdout
+    assert "" in r.stdout
+
+
+# def test_cli_new_direct(mkroot, tmp_path):
+#     """ """
+#
+#     root, _ = mkroot.have(
+#         "source.mk.yaml",
+#         """
+#         source: test_source
+#         """,
+#     )
+#
+#     creat.__main__._paths = [root]
+#     creat.__main__.new("test_source", " ")
 
 
 def test_cli_list(mkroot):
-    """ Test list command functionality. """
+    """Test list command functionality."""
     r = runner.invoke(
         app,
         [
@@ -42,7 +56,7 @@ def test_cli_list(mkroot):
 
 
 def test_cli_develop(mkroot, tmp_path):
-    """ Test develop command functionality. """
+    """Test develop command functionality."""
     r = runner.invoke(
         app,
         [

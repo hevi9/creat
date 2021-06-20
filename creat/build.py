@@ -6,6 +6,7 @@ from typing import Iterable
 
 import strictyaml  # type: ignore
 
+from . import get_console
 from .action.copy import Copy
 from .action.move import Move
 from .action.remove import Remove
@@ -24,7 +25,7 @@ MAKE_ITEM_MAP = {
 
 
 def make_source_from_dict(item: dict, location: Location) -> Source:
-    """ Make source from given source control dict. """
+    """Make source from given source control dict."""
     source = Source(
         name=item["source"],
         control=item,
@@ -53,11 +54,15 @@ def make_source_from_dict(item: dict, location: Location) -> Source:
 
 
 def make_sources_from_file_yaml(location: Location) -> Iterable[Source]:
-    """ Make source item from yaml file. """
+    """Make source item from yaml file."""
+    console = get_console()
     with location.path_abs.open() as fo:
         text = fo.read()
+        if text.strip() == "":
+            console.print(f"{location} is empty, ignoring")
+            return
         data = strictyaml.load(text, label=str(location.path_abs)).data
         if not isinstance(data, list):
-            raise TypeError(f"not a list {data}")
+            raise TypeError(f"Top content is not a list type: '{text}': {location}")
         for item in data:
             yield make_source_from_dict(item, location)

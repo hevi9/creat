@@ -21,13 +21,13 @@ repos:
 
 
 -   repo: https://github.com/pre-commit/mirrors-isort
-    rev: 'v5.7.0'
+    rev: 'v5.8.0'
     hooks:
     -   id: isort
         name: Fix files with isort
 
 -   repo: https://github.com/psf/black
-    rev: 20.8b1
+    rev: 21.6b0
     hooks:
     -   id: black
         name: Fix files with black
@@ -50,24 +50,30 @@ repos:
         language: system
         types: [python]
 
--   repo: https://github.com/Lucas-C/pre-commit-hooks-safety
-    rev: v1.2.1
+# Check file and package security vulnerabilities :::::::::::::::::::::::::::::::::::::::::::::::::
+
+-   repo: local
     hooks:
-    -   id: python-safety-dependencies-check
-        name: Check package vulnerabilities with safety
+    -   id: safety
+        name: "Check package vulnerabilities with safety"
+        language: system
+        entry: poetry run safety check
+        pass_filenames: false
 
 -   repo: https://github.com/PyCQA/bandit
     rev: 1.7.0
     hooks:
     -   id: bandit
-        name: Check code vulnerabilities with bandit
+        name: "Check code vulnerabilities with bandit"
         args: ['-iii', '-ll']
+
+# Test ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 -   repo: local
     hooks:
-    -   id: pytest-check
-        name: Test with pytest
-        entry: pytest
+    -   id: pytest
+        name: "Test with pytest"
         language: system
+        entry: poetry run pytest
+        types: [python]
         pass_filenames: false
-        always_run: true
