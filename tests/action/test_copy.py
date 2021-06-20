@@ -2,7 +2,7 @@
 
 import pytest
 
-from creat.context import make_root_context
+from creat.contexts import make_root_context
 from creat.find import update_index_from_roots
 from creat.index import Index
 from creat.run import run
@@ -10,7 +10,7 @@ from creat.run import run
 
 @pytest.mark.skip(reason="TODO")
 def test_source_make_copy_file(mkroot):
-    """ Test copy a file. """
+    """Test copy a file."""
     mkroot.have(
         "test/source/make_copy.mk.yaml",
         """
@@ -25,7 +25,7 @@ def test_source_make_copy_file(mkroot):
 
 
 def test_source_make_copy_tree(mkroot):
-    """ Test copy a tree. """
+    """Test copy a tree."""
     mkroot.have(
         "test/source/make_copy_tree.mk.yaml",
         """

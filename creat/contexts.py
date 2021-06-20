@@ -1,8 +1,10 @@
 """ Managing jinja2 vars context. """
-
+from pathlib import Path
 from typing import Any, Mapping
 
 import jinja2
+
+from creat.ex import ValidateError
 
 env = jinja2.Environment(  # nosec
     variable_start_string="${",
@@ -12,7 +14,7 @@ env = jinja2.Environment(  # nosec
 
 
 def render(text: str, context: Mapping[str, Any]) -> str:
-    """ Render text block with context. """
+    """Render text block with context."""
     tmpl = jinja2.Template.from_code(
         environment=env,
         code=env.compile(text, filename="internal"),
@@ -23,8 +25,18 @@ def render(text: str, context: Mapping[str, Any]) -> str:
 
 
 def make_root_context(target_name: str) -> Mapping[str, Any]:
-    """ Make root context. """
+    """Make root context."""
     return {
         "name": target_name,
         "target": target_name,
     }
+
+
+def validate(context: Mapping[str, Any]):
+    """Validate vars context configuration.
+
+    :raises MkValidateError on validation error.
+    """
+    target = Path(context["target"])
+    if target.exists():
+        raise ValidateError(f"{target} already exists")

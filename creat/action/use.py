@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any, Iterable, Mapping, Optional
 
 from creat.action.bases import Action
-from creat.context import render
+from creat.contexts import render
 from creat.run import run
 from creat.source import Source
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Use(Action):
-    """ Use other source action. """
+    """Use other source action."""
 
     _source: Source
     use_source_name: str
@@ -43,7 +43,7 @@ class Use(Action):
 
     @property
     def use_source(self) -> Optional[Source]:
-        """ Source to use. """
+        """Source to use."""
         return self._use_source
 
     @use_source.setter

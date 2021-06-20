@@ -6,12 +6,12 @@ from shutil import copytree
 from typing import Any, Mapping
 
 from creat.action.bases import Action
-from creat.context import render
+from creat.contexts import render
 from creat.source import Source
 
 
 class Copy(Action):
-    """ Action to copy tree or file. """
+    """Action to copy tree or file."""
 
     path_from: str
     path_to: str

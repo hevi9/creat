@@ -7,13 +7,12 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
-from creat.context import make_root_context
+from creat.contexts import make_root_context, validate
 
 from . import get_console, setup_logger
 from .find import update_index_from_roots
 from .index import Index
 from .run import run
-from .validate import validate
 
 # from watchgod import awatch
 
@@ -54,7 +53,7 @@ def main(
         ),
     ),
 ):
-    """ Makes """
+    """Makes"""
     global _paths, _console
     _paths = path
     _console = get_console()
@@ -72,7 +71,7 @@ def new(
         help="Target directory or file name. May not exists.",
     ),
 ):
-    """ Make new target from given source. """
+    """Make new target from given source."""
     try:
         index = Index()
         update_index_from_roots(index, _paths, [])
@@ -91,7 +90,7 @@ def new(
 
 @app.command()
 def list():  # pylint: disable=redefined-builtin
-    """ List sources. """
+    """List sources."""
     try:
         index = Index()
         update_index_from_roots(index, _paths, [])
@@ -119,7 +118,7 @@ def develop(
         help="Source to develop",
     )
 ):
-    """ Develop sources. """
+    """Develop sources."""
     # awatch()
 
 

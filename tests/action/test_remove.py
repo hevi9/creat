@@ -1,13 +1,13 @@
 """ Test removing files or trees. """
 
-from creat.context import make_root_context
+from creat.contexts import make_root_context
 from creat.find import update_index_from_roots
 from creat.index import Index
 from creat.run import run
 
 
 def test_source_make_remove_tree_render_list(mkroot):
-    """ Test tree removal with render var. """
+    """Test tree removal with render var."""
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",
         """
@@ -33,7 +33,7 @@ def test_source_make_remove_tree_render_list(mkroot):
 
 
 def test_source_make_remove_file(mkroot):
-    """ Test file removal. """
+    """Test file removal."""
     mkroot.have(
         "test/source/make_remove_file.mk.yaml",
         """
@@ -54,7 +54,7 @@ def test_source_make_remove_file(mkroot):
 
 
 def test_source_make_remove_tree(mkroot):
-    """ Test tree removal. """
+    """Test tree removal."""
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",
         """
@@ -76,7 +76,7 @@ def test_source_make_remove_tree(mkroot):
 
 
 def test_source_make_remove_tree_render(mkroot):
-    """ Test tree removal with render. """
+    """Test tree removal with render."""
     mkroot.have(
         "test/source/make_remove_tree.mk.yaml",
         """

@@ -37,6 +37,7 @@ pytest-xprocess = "^0.17.1"
 Sphinx = "^4.0.2"
 sphinx-rtd-theme = "^0.5.1"
 doit = "^0.33.1"
+types-Jinja2 = "^2.11.2"
 
 [tool.poetry.scripts]
 creat = 'creat.__main__:app'
