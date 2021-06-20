@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Mapping
 
-from .ex import MkValidateError
+from .ex import ValidateError
 
 
 def validate(context: Mapping[str, Any]):
@@ -15,4 +15,4 @@ def validate(context: Mapping[str, Any]):
     """
     target = Path(context["target"])
     if target.exists():
-        raise MkValidateError(f"{target} already exists")
+        raise ValidateError(f"{target} already exists")

@@ -3,12 +3,12 @@
 from creat.location import Location
 
 
-class MkError(Exception):
-    """ Base exception for mk excpetions. """
+class Error(Exception):
+    """Base exception for mk excpetions."""
 
 
-class MkDuplicateSourceError(MkError):
-    """ Duplicate source id exists. """
+class DuplicateSourceError(Error):
+    """Duplicate source id exists."""
 
     location: Location
     id2: str
@@ -19,8 +19,8 @@ class MkDuplicateSourceError(MkError):
         self.id2 = id2
 
 
-class MkFieldError(MkError):
-    """ Error on item field definition. """
+class FieldError(Error):
+    """Error on item field definition."""
 
     location: Location
     field: str
@@ -31,5 +31,5 @@ class MkFieldError(MkError):
         self.field = field
 
 
-class MkValidateError(MkError):
-    """ Error on validation. """
+class ValidateError(Error):
+    """Error on validation."""
