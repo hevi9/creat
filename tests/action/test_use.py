@@ -1,12 +1,12 @@
 """ Test use action. """
 
-from creat.find import update_index_from_roots
+from creat.builds import update_index_from_roots
 from creat.index import Index
 from creat.run import run
 
 
 def test_source_make_use(mkroot, capfd):
-    """ Test source to use source. """
+    """Test source to use source."""
     mkroot.have(
         "test/source/make_use.mk.yaml",
         """

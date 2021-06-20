@@ -7,10 +7,10 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from creat.builds import update_index_from_roots
 from creat.contexts import make_root_context, validate
 
 from . import get_console, setup_logger
-from .find import update_index_from_roots
 from .index import Index
 from .run import run
 

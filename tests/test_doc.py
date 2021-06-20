@@ -1,11 +1,11 @@
 """ Test doc info. """
 
-from creat.find import update_index_from_roots
+from creat.builds import update_index_from_roots
 from creat.index import Index
 
 
 def test_item_doc(mkroot):
-    """ Test doc in item. """
+    """Test doc in item."""
     mkroot.have(
         "test/source/item_doc_and_show.mk.yaml",
         """

@@ -2,12 +2,12 @@
 
 from pathlib import Path
 
-import creat.find
+import creat.builds
 
 
 def test_find_mk_files(mkroots):
-    """ Test find mk file in roots. """
-    for location in creat.find.find_mk_files(
+    """Test find mk file in roots."""
+    for location in creat.builds.find_mk_files(
         [mkroots["base"]["."].path_root, mkroots["other"]["."].path_root], [".git"]
     ):
         assert location.path_rel in (
@@ -18,8 +18,8 @@ def test_find_mk_files(mkroots):
 
 
 def test_find_mk_sources_from_roots(mkroots):
-    """ Test find mk file in roots. """
-    for source in creat.find.find_mk_sources_from_roots(
+    """Test find mk file in roots."""
+    for source in creat.builds.find_mk_sources_from_roots(
         [mkroots["base"]["."].path_root, mkroots["other"]["."].path_root], []
     ):
         assert source.name in ("primary_file", "other_source", "combined")
