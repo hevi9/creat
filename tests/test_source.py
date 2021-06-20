@@ -1,12 +1,12 @@
 """ Test source. """
+import pytest
+from ruamel.yaml.scanner import ScannerError
 
 from creat.build import make_sources_from_file_yaml
 from creat.find import update_index_from_roots
 from creat.index import Index
 from creat.location import Location
 from creat.run import run
-
-# from strictyaml.ruamel.yaml.scanner import ScannerError
 
 
 def test_primary_source(mkroots):
@@ -18,14 +18,14 @@ def test_primary_source(mkroots):
         assert isinstance(source.make, list)
 
 
-# def test_error_1(mkroots):
-#     """ Test errorful source, """
-#     path_root, path_rel = mkroots["errors"]["error1.mk.yaml"]
-#     with pytest.raises(ScannerError) as ex:
-#         for _ in make_sources_from_file_yaml(Location(path_root=path_root, path_rel=path_rel)):
-#             ...
-#     msg = str(ex.value)
-#     assert "error1.mk.yaml" in msg
+def test_error_1(mkroots):
+    """Test errorful source,"""
+    path_root, path_rel = mkroots["errors"]["error1.mk.yaml"]
+    with pytest.raises(ScannerError) as ex:
+        for _ in make_sources_from_file_yaml(Location(path_root=path_root, path_rel=path_rel)):
+            ...
+    msg = str(ex.value)
+    assert "error1.mk.yaml" in msg
 
 
 def test_source_run(mkroot, capfd):
