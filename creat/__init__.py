@@ -11,7 +11,7 @@ from rich.theme import Theme as RichTheme
 
 
 def version() -> str:
-    """ Get package version. """
+    """Get package version."""
     # pylint: disable=import-outside-toplevel
     try:
         import importlib.metadata
@@ -38,7 +38,7 @@ def hsl(hue: float = 0.0, saturation: float = 1.0, light: float = 1.0) -> str:
 
 
 class Theme(Enum):
-    """ Rich theme options. """
+    """Rich theme options."""
 
     INFO = "info"
     """ Theme for informatic information. """
@@ -51,7 +51,7 @@ class Theme(Enum):
 
 
 def get_theme() -> RichTheme:
-    """ Get rich theme. """
+    """Get rich theme."""
     light = 0.5
     saturation = 0.4
     return RichTheme(
@@ -67,7 +67,7 @@ _console: Optional[Console] = None
 
 
 def get_console() -> Console:
-    """ Get rich console. """
+    """Get rich console."""
     global _console
     if not _console:
         _console = Console(theme=get_theme())
@@ -98,7 +98,7 @@ class _InterceptHandler(logging.Handler):
 
 
 def setup_logger(level: str = "INFO"):
-    """ Setup logger. """
+    """Setup logger."""
 
     logger.remove()  # remove all loggers
     logger.add(
@@ -108,3 +108,6 @@ def setup_logger(level: str = "INFO"):
     )
     # noinspection PyArgumentList
     logging.basicConfig(handlers=[_InterceptHandler()], level=0)
+
+
+MK_GLOB = ("*.mk.yaml", "*.mk.yml")

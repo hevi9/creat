@@ -2,8 +2,7 @@
 import pytest
 from ruamel.yaml.scanner import ScannerError
 
-from creat.build import make_sources_from_file_yaml
-from creat.find import update_index_from_roots
+from creat.builds import make_sources_from_file_yaml, update_index_from_roots
 from creat.index import Index
 from creat.location import Location
 from creat.run import run

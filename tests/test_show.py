@@ -1,11 +1,11 @@
 """ Test show item flag. """
 
-from creat.find import update_index_from_roots
+from creat.builds import update_index_from_roots
 from creat.index import Index
 
 
 def test_item_show(mkroot):
-    """ Test item show. """
+    """Test item show."""
     mkroot.have(
         "test/source/item_doc_and_show.mk.yaml",
         """

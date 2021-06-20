@@ -1,7 +1,7 @@
 """ Test change directory in item ."""
 
+from creat.builds import update_index_from_roots
 from creat.contexts import make_root_context
-from creat.find import update_index_from_roots
 from creat.index import Index
 from creat.run import run
 
