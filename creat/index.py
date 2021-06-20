@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Dict, Iterable
 
-from .ex import MkDuplicateSourceError
+from .ex import DuplicateSourceError
 
 if TYPE_CHECKING:
     from .source import Source
 
 
 class Index:
-    """ Index to contain and access sources. """
+    """Index to contain and access sources."""
 
     _sources: Dict[str, Source]
 
@@ -19,18 +19,18 @@ class Index:
         self._sources = {}
 
     def add_source(self, source: Source) -> None:
-        """ Add source to index. """
+        """Add source to index."""
         if self._sources.get(source.id):
-            raise MkDuplicateSourceError("already exists", id2=source.id, location=source.location)
+            raise DuplicateSourceError("already exists", id2=source.id, location=source.location)
         self._sources[source.id] = source
 
     @property
     def sources(self) -> Iterable[Source]:
-        """ Sources in index. """
+        """Sources in index."""
         return self._sources.values()
 
     def find(self, source_id: str) -> Source:
-        """ Find source by name. """
+        """Find source by name."""
         return self._sources[source_id]
 
     def find_from(self, use_source_name: str, from_source: Source) -> Source:
