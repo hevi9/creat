@@ -20,6 +20,7 @@ colorama = "^0.4.4"
 shellingham = "^1.4.0"
 watchgod = "^0.7"
 "ruamel.yaml" = "^0.17.9"
+pydantic = "^1.8.2"
 
 [tool.poetry.dev-dependencies]
 pylint = "^2.5.3"
