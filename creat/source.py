@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 
 
 class Source(Item, Runnable):
-    """ Source definitions. """
+    """Source definitions."""
 
     name: str
     """ Name of the source. """
@@ -37,12 +37,12 @@ class Source(Item, Runnable):
 
     @property
     def id(self) -> str:
-        """ Identifier of the source. """
+        """Identifier of the source."""
         return str(self._location.path_rel.parent / self.name).replace("\\", "/")
 
     @property
     def dir(self) -> str:
-        """ Directory where the source is defined. """
+        """Directory where the source is defined."""
         return str(self._location.path_abs.parent)
 
     def update(self, index: Index) -> None:

@@ -6,7 +6,7 @@ from pathlib import Path
 
 @dataclass
 class Location:
-    """ Source file location. """
+    """Source file location."""
 
     path_root: Path
 
@@ -17,5 +17,5 @@ class Location:
 
     @property
     def path_abs(self) -> Path:
-        """ Absolute path to source file. """
+        """Absolute path to source file."""
         return self.path_root / self.path_rel

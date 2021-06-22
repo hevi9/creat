@@ -12,7 +12,7 @@ from creat.source import Source
 
 
 class Action(Item, Runnable):
-    """ Base implementation for make items. """
+    """Base implementation for make items."""
 
     _source: Source
     _cd: Optional[str]

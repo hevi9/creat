@@ -4,7 +4,7 @@ from typing import Union
 
 
 def scalar_to_bool(scalar: Union[bool, str]) -> bool:
-    """ Decode scalar to bool. """
+    """Decode scalar to bool."""
     if isinstance(scalar, bool):
         return scalar
     if isinstance(scalar, str):

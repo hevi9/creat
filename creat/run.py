@@ -6,5 +6,5 @@ from creat.source import Source
 
 
 def run(source: Source, context: Mapping[str, Any]):
-    """ Run source. """
+    """Run source."""
     source.run(context)
