@@ -5,7 +5,7 @@ import pytest
 
 @pytest.mark.skip(reason="TODO")
 def test_config_file(mkroot):
-    """ Test updating json file. """
+    """Test updating json file."""
     mkroot.have(
         "test/source/make_cmd.mk.yaml",
         """

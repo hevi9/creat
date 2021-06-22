@@ -5,7 +5,7 @@ import pytest
 
 @pytest.mark.skip(reason="TODO")
 def test_source_make_move(mkroot):
-    """ Test move tree. """
+    """Test move tree."""
     mkroot.have(
         "test/source/make_cmd.mk.yaml",
         """
