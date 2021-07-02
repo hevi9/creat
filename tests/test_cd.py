@@ -1,4 +1,5 @@
 """ Test change directory in item ."""
+import pytest
 
 from creat.builds import update_index_from_roots
 from creat.contexts import make_root_context
@@ -6,6 +7,7 @@ from creat.index import Index
 from creat.run import run
 
 
+@pytest.mark.skip(reason="Non cross platform")
 def test_item_cd(mkroot, capfd):
     """Test item cd."""
     root, rel = mkroot.have_dir("target-area")
