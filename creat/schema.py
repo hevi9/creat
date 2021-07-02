@@ -3,14 +3,14 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Optional, Mapping, TypedDict, Union, Sequence
+from typing import Any, List, Mapping, Optional, Sequence, TypedDict, Union
 
-from pydantic import Field
-from pydantic.main import BaseModel
+from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 
 
 class TopLevel(BaseModel):
     sources: List[Any]
+    doc: Optional[str]
 
 
 class Item(BaseModel):
@@ -23,27 +23,42 @@ class Runnable(Item):
     env: Optional[Mapping[str, str]]
 
 
-class Action(Runnable):
-    pass
-
-
 class Paths(TypedDict):
     src: Path
     dst: Path
 
 
-class Copy(Action):
+class Copy(Runnable):
     copy_: Union[str, Paths] = Field(alias="copy")
 
 
-class Move(Action):
+class Move(Runnable):
     move: Union[str, Paths]
 
 
-class Remove(Action):
+class Remove(Runnable):
     remove: Union[str, Sequence[Path]]
+
+
+class Exe(Runnable):
+    exe: str
+
+
+class Shell(Runnable):
+    shell: str
+
+
+class Use(Runnable):
+    use: str
+    with_: Optional[Mapping[str, str]] = Field(alias="with")
+
+
+class Config(Runnable):
+    config: Path
+    update: Optional[Any]
+    remove: Optional[Any]
 
 
 class Source(Runnable):
     name: str
-    actions: List[Action]
+    actions: List[Runnable]
