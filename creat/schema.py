@@ -8,11 +8,6 @@ from typing import Any, List, Mapping, Optional, Sequence, TypedDict, Union
 from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 
 
-class TopLevel(BaseModel):
-    sources: List[Any]
-    doc: Optional[str]
-
-
 class Item(BaseModel):
     doc: Optional[str]
     show: bool
@@ -21,6 +16,7 @@ class Item(BaseModel):
 class Runnable(Item):
     cd: Optional[str]
     env: Optional[Mapping[str, str]]
+    with_: Optional[Mapping[str, str]] = Field(alias="with")
 
 
 class Paths(TypedDict):
@@ -50,7 +46,6 @@ class Shell(Runnable):
 
 class Use(Runnable):
     use: str
-    with_: Optional[Mapping[str, str]] = Field(alias="with")
 
 
 class Config(Runnable):
@@ -62,3 +57,7 @@ class Config(Runnable):
 class Source(Runnable):
     name: str
     actions: List[Runnable]
+
+
+class TopLevel(Item):
+    sources: List[Source]
