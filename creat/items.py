@@ -79,3 +79,6 @@ class Runnable(Updateable):
     @abstractmethod
     def env(self) -> Mapping[str, str]:
         """Environment variables in this run context."""
+
+
+class TopLevel(Item):

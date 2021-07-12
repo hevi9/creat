@@ -110,4 +110,4 @@ def setup_logger(level: str = "INFO"):
     logging.basicConfig(handlers=[_InterceptHandler()], level=0)
 
 
-MK_GLOB = ("*.mk.yaml", "*.mk.yml")
+CREAT_GLOB = ("*.creat.yaml", "*.creat.yml")

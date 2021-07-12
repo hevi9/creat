@@ -5,7 +5,7 @@ from __future__ import annotations
 import os
 from typing import TYPE_CHECKING, Any, Iterable, List, Mapping, Optional
 
-from .bases import Item, Runnable
+from .items import Item, Runnable
 from .location import Location
 
 if TYPE_CHECKING:
@@ -43,7 +43,7 @@ class Source(Item, Runnable):
     @property
     def dir(self) -> str:
         """Directory where the source is defined."""
-        return str(self._location.path_abs.parent)
+        return str(self._location.path.parent)
 
     def update(self, index: Index) -> None:
         for action in self.make:

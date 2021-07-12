@@ -13,7 +13,7 @@ def test_primary_source(mkroots):
     path_root, path_rel = mkroots["base"]["primary.mk.yaml"]
     for source in make_sources_from_file_yaml(Location(path_root=path_root, path_rel=path_rel)):
         assert source.name in ("primary_file", "other_source", "combined")
-        assert str(source.location.path_abs).endswith("primary.mk.yaml")
+        assert str(source.location.path).endswith("primary.mk.yaml")
         assert isinstance(source.make, list)
 
 

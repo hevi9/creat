@@ -1,30 +1,49 @@
 """ Test copy operation. """
+from pathlib import Path
 
 import pytest
 
-from creat.builds import update_index_from_roots
+from creat.builds import update_index_from_roots, load
 from creat.contexts import make_root_context
 from creat.index import Index
+from creat.location import Location
 from creat.run import run
+from creat.schema import TopLevel
 
 
-@pytest.mark.skip(reason="TODO")
-def test_source_make_copy_file(mkroot):
+@pytest.mark.skipif(False, reason="TODO")
+def test_copy_file():
     """Test copy a file."""
-    mkroot.have(
-        "test/source/make_copy.mk.yaml",
-        """
-        -   source: cmd-source
-            make:
-            -   cmd: copy source-file target-file
-            -   cmd: copy source-tree target-tree
-            -   cmd: move source-tree target-tree
-            -   cmd: remove remove-tree-1
-        """,
+
+    location = Location(
+        path_root=Path(__file__).parent / "samples",
+        path_rel=Path("copy.creat.yaml"),
     )
+    data1 = load(location)
+    data2 = TopLevel(**data1)
+    print(data2)
+
+    # mkroot.have(
+    #     "test/source/make_copy.mk.yaml",
+    #     """
+    #     -   source: cmd-source
+    #         make:
+    #         -   cmd: copy source-file target-file
+    #         -   cmd: copy source-tree target-tree
+    #         -   cmd: move source-tree target-tree
+    #         -   cmd: remove remove-tree-1
+    #     """,
+    # )
+
+    # create_roots = None
+    # ignores = None
+    # context = make_context(target="target")
+    # index = build(roots=create_roots, ignores=ignores)
+    # source = index.find(source="test-copy-file")
+    # source.run(context)
 
 
-def test_source_make_copy_tree(mkroot):
+def test_copy_tree(mkroot):
     """Test copy a tree."""
     mkroot.have(
         "test/source/make_copy_tree.mk.yaml",

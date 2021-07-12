@@ -1,7 +1,7 @@
 """ mk CLI. """
-
+import sys
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import typer
 from rich.console import Console
@@ -9,6 +9,7 @@ from rich.table import Table
 
 from creat.builds import update_index_from_roots
 from creat.contexts import make_root_context, validate
+from creat.schema import TopLevel
 
 from . import get_console, setup_logger
 from .index import Index
@@ -45,7 +46,7 @@ def main(
     ),
     path: List[Path] = typer.Option(
         [Path("~").expanduser() / ".mkroot"],
-        envvar="MKPATH",
+        envvar="CREATPATH",
         help=_tidy(
             """Path(s) to find sources. Can be given multiple times.
             Environment variable MKPATH can be used also to
@@ -120,6 +121,21 @@ def develop(
 ):
     """Develop sources."""
     # awatch()
+
+
+@app.command()
+def gen_json_schema(
+    path: Optional[Path] = typer.Argument(
+        None,
+        help="File to write json schema",
+    )
+):
+    """Generate json schema"""
+    file = sys.stdout
+    if path:
+        file = path.open("wt", encoding="utf-8")
+    print(TopLevel.schema_json(), file=file)
+    file.close()
 
 
 if __name__ == "__main__":

@@ -7,7 +7,7 @@ import creat.builds
 
 def test_find_mk_files(mkroots):
     """Test find mk file in roots."""
-    for location in creat.builds.find_mk_files(
+    for location in creat.builds.discover(
         [mkroots["base"]["."].path_root, mkroots["other"]["."].path_root], [".git"]
     ):
         assert location.path_rel in (
