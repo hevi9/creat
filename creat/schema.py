@@ -3,14 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Mapping, Optional, Sequence, TypedDict, Union
+from typing import Any, List, Mapping, Optional, Sequence, Union
+
+from typing_extensions import TypedDict
 
 from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 
 
 class Item(BaseModel):
     doc: Optional[str]
-    show: bool
+    show: bool = True
+
+    _parent: Optional[Item] = None
 
 
 class Runnable(Item):
@@ -55,8 +59,8 @@ class Config(Runnable):
 
 
 class Source(Runnable):
-    name: str
-    actions: List[Runnable]
+    source: str
+    actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
 
 
 class TopLevel(Item):

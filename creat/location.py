@@ -13,9 +13,9 @@ class Location:
     path_rel: Path
 
     def __str__(self) -> str:
-        return str(self.path_abs)
+        return str(self.path)
 
     @property
-    def path_abs(self) -> Path:
+    def path(self) -> Path:
         """Absolute path to source file."""
         return self.path_root / self.path_rel
