@@ -9,7 +9,7 @@ from rich.table import Table
 
 from creat.builds import update_index_from_roots
 from creat.contexts import make_root_context, validate
-from creat.schema import TopLevel
+from creat.schema import File
 
 from . import get_console, setup_logger
 from .index import Index
@@ -134,7 +134,7 @@ def gen_json_schema(
     file = sys.stdout
     if path:
         file = path.open("wt", encoding="utf-8")
-    print(TopLevel.schema_json(), file=file)
+    print(File.schema_json(), file=file)
     file.close()
 
 

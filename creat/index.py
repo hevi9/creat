@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Dict, Iterable
+from functools import singledispatchmethod
+from typing import Dict, Iterable, ForwardRef
 
 from .ex import DuplicateSourceError
+from .schema import File, Source
 
-if TYPE_CHECKING:
-    from .source import Source
+
+Index = ForwardRef("Index")
 
 
 class Index:
@@ -18,11 +20,28 @@ class Index:
     def __init__(self):
         self._sources = {}
 
-    def add_source(self, source: Source) -> None:
-        """Add source to index."""
-        if self._sources.get(source.id):
-            raise DuplicateSourceError("already exists", id2=source.id, location=source.location)
-        self._sources[source.id] = source
+    @singledispatchmethod
+    def add(self, item) -> Index:
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.add: not implemented for {type(item)}"
+        )
+
+    @add.register
+    def _(self, item: File) -> Index:
+        for source in item.sources:
+            self.add(source)
+        return self
+
+    @add.register
+    def _(self, item: Source) -> Index:
+        if self._sources.get(item.id):
+            raise DuplicateSourceError(
+                "already exists",
+                id2=item.id,
+                location=item.location,
+            )
+        self._sources[item.id] = item
+        return self
 
     @property
     def sources(self) -> Iterable[Source]:
@@ -56,3 +75,11 @@ class Index:
         if not source:
             raise KeyError(f"Source {use_source_name} not found")
         return source
+
+    __instance: Index = None
+
+    @classmethod
+    def get(cls) -> Index:
+        if not cls.__instance:
+            cls.__instance = Index()
+        return cls.__instance

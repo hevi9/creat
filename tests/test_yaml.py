@@ -7,7 +7,7 @@ from pathlib import Path
 import pytest
 from ruamel.yaml import YAML
 
-from creat.schema import TopLevel
+from creat.schema import File
 
 
 @pytest.mark.skipif(True, reason="DEVELOP")
@@ -42,5 +42,5 @@ def test_schema():
     path = Path(__file__).parent / "samples" / "sample01.yaml"
     yaml = YAML()
     data = yaml.load(path)
-    data2 = TopLevel(sources=data)
+    data2 = File(sources=data)
     print(data2, data.lc)
