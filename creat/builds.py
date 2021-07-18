@@ -42,7 +42,7 @@ class Top:
 def build(roots: List[Path], ignores: List[str]) -> Index:
     locations = discover(roots, ignores)
     dicts = [load(location) for location in locations]
-    toplevels = [schema.TopLevel(**d) for d in dicts]
+    toplevels = [schema.File(**d) for d in dicts]
 
 
 def discover(roots: Iterable[Path], ignores: Iterable[str]) -> Iterable[Location]:
@@ -67,7 +67,7 @@ def load(location: Location) -> Dict[str, Any]:
     return yaml.load(location.path)
 
 
-def build_toplevel(data: schema.TopLevel):
+def build_toplevel(data: schema.File):
     pass
 
 

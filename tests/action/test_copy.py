@@ -8,7 +8,9 @@ from creat.contexts import make_root_context
 from creat.index import Index
 from creat.location import Location
 from creat.run import run
-from creat.schema import TopLevel
+from creat.schema import File
+
+from rich import print
 
 
 @pytest.mark.skipif(False, reason="TODO")
@@ -20,7 +22,8 @@ def test_copy_file():
         path_rel=Path("copy.creat.yaml"),
     )
     data1 = load(location)
-    data2 = TopLevel(**data1)
+    data2 = File(**data1, location_=location)
+
     print(data2)
 
     # mkroot.have(
