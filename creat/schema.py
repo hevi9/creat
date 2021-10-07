@@ -5,9 +5,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, List, Mapping, Optional, Sequence, Union
 
-from typing_extensions import TypedDict
-
 from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
+from typing_extensions import TypedDict
 
 from creat.location import Location
 

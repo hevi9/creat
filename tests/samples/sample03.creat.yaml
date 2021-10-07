@@ -14,16 +14,3 @@ sources:
   - source: source-move-1
     actions:
       - move: file-src file-dst
-
-
-
-
-
-
-
-
-
-
-
-
-

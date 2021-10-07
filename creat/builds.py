@@ -5,12 +5,12 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Iterable, List, Dict, Any
+from typing import Any, Dict, Iterable, List
 
 import strictyaml  # type: ignore
 from ruamel.yaml import YAML
 
-from . import CREAT_GLOB, get_console
+from . import CREAT_GLOB, get_console, schema
 from .action.copy import Copy
 from .action.move import Move
 from .action.remove import Remove
@@ -19,9 +19,6 @@ from .action.use import Use
 from .index import Index
 from .location import Location
 from .source import Source
-
-from . import schema
-
 
 MAKE_ITEM_MAP = {
     "shell": Shell,

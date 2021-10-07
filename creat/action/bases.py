@@ -6,8 +6,8 @@ from contextlib import contextmanager
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Optional
 
-from creat.items import Item, Runnable
 from creat.index import Index
+from creat.items import Item, Runnable
 from creat.source import Source
 
 
