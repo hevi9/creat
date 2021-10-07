@@ -25,7 +25,9 @@
 #             self.path_from = params["from"]
 #             self.path_to = params["to"]
 #         else:
-#             raise ValueError(f"Invalid type {type(params)} for field 'copy' in {source._location}")
+#             raise ValueError(
+#             f"Invalid type {type(params)} for field 'copy' in {source._location}"
+#             )
 #
 #     def run(self, context: Mapping[str, Any]) -> None:
 #         path_from = Path(render(self.path_from, context))

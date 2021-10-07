@@ -65,3 +65,21 @@ source = ['creat/']
 precision = 2
 skip_covered = true
 fail_under = 90
+
+[tool.pylint.similarities]
+min-similarity-lines = 11
+ignore-docstrings = true
+ignore-comments = true
+ignore-imports = true
+
+[tool.pylint.'MESSAGES CONTROL']
+max-line-length = 100
+disable = [
+    "import-error",
+    "missing-class-docstring",
+    "consider-using-f-string",
+    "invalid-name",
+    "global-statement",
+    "missing-function-docstring",
+    "too-few-public-methods",
+]
