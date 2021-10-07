@@ -25,6 +25,10 @@ jobs:
           python -m pip install poetry
           poetry install
       - uses: pre-commit/action@v2.0.3
+      - name: Test with pytest
+        run: |
+          poetry run pytest .
+
 
 #      - name: Check code style with black
 #        run: |
@@ -50,6 +54,3 @@ jobs:
 #        run: |
 #          poetry run mypy --ignore-missing-imports .
 #
-#      - name: Test with pytest
-#        run: |
-#          poetry run pytest .

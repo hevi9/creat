@@ -83,14 +83,14 @@ repos:
 
   # Test ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-  - repo: local
-    hooks:
-      - id: pytest
-        name: "Test with pytest"
-        language: system
-        entry: poetry run pytest
-        types: [ python ]
-        pass_filenames: false
+  #  - repo: local
+  #    hooks:
+  #      - id: pytest
+  #        name: "Test with pytest"
+  #        language: system
+  #        entry: poetry run pytest
+  #        types: [ python ]
+  #        pass_filenames: false
 
   # Check file and package security vulnerabilities :::::::::::::::::::::::::::::::::::::::::::::::::
 
