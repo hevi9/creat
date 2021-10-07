@@ -98,6 +98,16 @@ repos:
     hooks:
       - id: pylint
 
+  #- repo: https://github.com/sirosen/check-jsonschema
+  #  rev: 0.5.0
+  #  hooks:
+  #    - id: check-github-workflows
+
+  #  - repo: https://github.com/jendrikseipp/vulture
+  #    rev: 'v2.3'  # or any later Vulture version
+  #    hooks:
+  #      - id: vulture
+
   #  - repo: https://github.com/pycqa/pydocstyle
   #    rev: 6.1.1
   #    hooks:
