@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Mapping, Optional, Sequence, Union
+from typing import Any, List, Mapping, Sequence, Union
 
 from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 from typing_extensions import TypedDict
@@ -12,9 +12,9 @@ from creat.discovers import Location
 
 
 class Item(BaseModel):
-    doc: Optional[str] = None
+    doc: str | None = None
     show: bool = True
-    parent: Optional[Item] = None
+    parent: Item | None = None
 
     @property
     def location(self) -> Location:
@@ -24,9 +24,9 @@ class Item(BaseModel):
 
 
 class Runnable(Item):
-    cd_: Optional[str] = Field(alias="cd")
-    env_: Optional[Mapping[str, str]] = Field(alias="env")
-    with_: Optional[Mapping[str, str]] = Field(alias="with")
+    cd_: str | None = Field(alias="cd")
+    env_: Mapping[str, str] | None = Field(alias="env")
+    with_: Mapping[str, str] | None = Field(alias="with")
 
     @property
     def env(self) -> Mapping[str, str]:
@@ -47,15 +47,15 @@ class Paths(TypedDict):
 
 
 class Copy(Action):
-    copy_: Union[str, Paths] = Field(alias="copy")
+    copy_: str | Paths = Field(alias="copy")
 
 
 class Move(Action):
-    move: Union[str, Paths]
+    move: str | Paths
 
 
 class Remove(Action):
-    remove: Union[str, Sequence[Path]]
+    remove: str | Sequence[Path]
 
 
 class Exe(Action):
@@ -72,8 +72,8 @@ class Use(Action):
 
 class Config(Runnable):
     config: Path
-    update: Optional[Any]
-    remove: Optional[Any]
+    update: Any | None
+    remove: Any | None
 
 
 class Source(Runnable):
