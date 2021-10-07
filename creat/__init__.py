@@ -2,8 +2,7 @@ import logging
 import sys
 from colorsys import hls_to_rgb
 from enum import Enum
-from pathlib import Path
-from typing import List, Optional
+from typing import Optional
 
 from loguru import logger
 from rich.console import Console
@@ -33,7 +32,7 @@ def hsl(hue: float = 0.0, saturation: float = 1.0, light: float = 1.0) -> str:
         max(min(light, 1.0), 0.0),
         max(min(saturation, 1.0), 0.0),
     )
-    return "rgb({},{},{})".format(int(r * 255), int(g * 255), int(b * 255))
+    return f"rgb({int(r * 255)},{int(g * 255)},{int(b * 255)})"
 
 
 class Themes(str, Enum):
@@ -55,9 +54,9 @@ def get_theme() -> Theme:
     saturation = 0.4
     return Theme(
         {
-            Themes.INFO.value: "{}".format(hsl(180.0, saturation, light)),
-            Themes.WARNING.value: "{}".format(hsl(30.0, saturation, light)),
-            Themes.ERROR.value: "{}".format(hsl(0.0, saturation, light)),
+            Themes.INFO.value: f"{hsl(180.0, saturation, light)}",
+            Themes.WARNING.value: f"{hsl(30.0, saturation, light)}",
+            Themes.ERROR.value: f"{hsl(0.0, saturation, light)}",
         }
     )
 

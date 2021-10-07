@@ -92,6 +92,9 @@ def _tidy(text: str) -> str:
 @app.command("list")
 def cmd_list():
     """List sources."""
+    p = get_console().print
+    p(_state.roots)
+
     locations = list(discover(_state.roots, _state.ignore_globs))
     get_console().print(locations)
     # try:

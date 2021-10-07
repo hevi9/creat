@@ -1,10 +1,22 @@
-# """ Test cli functionality. """
-# import pytest
-# from typer.testing import CliRunner
-#
-# from creat.__main__ import app
-#
-# runner = CliRunner()
+from typer.testing import CliRunner
+
+from creat.__main__ import app
+
+runner = CliRunner()
+
+
+def test_cli_list():
+    r = runner.invoke(
+        app,
+        [
+            "--root",
+            "joo",
+            "list",
+        ],
+    )
+    print(r.stdout)
+
+
 #
 #
 # @pytest.mark.skip(reason="Not ready yet.")
@@ -43,16 +55,6 @@
 # #     creat.__main__.new("test_source", " ")
 #
 #
-# def test_cli_list(mkroot):
-#     """Test list command functionality."""
-#     r = runner.invoke(
-#         app,
-#         [
-#             "list",
-#         ],
-#     )
-#     assert r.exit_code == 0, r.stdout
-#     # assert "" in r.stdout
 #
 #
 # def test_cli_develop(mkroot, tmp_path):
