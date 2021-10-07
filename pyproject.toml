@@ -75,11 +75,14 @@ ignore-imports = true
 [tool.pylint.'MESSAGES CONTROL']
 max-line-length = 100
 disable = [
-    "import-error",
-    "missing-class-docstring",
     "consider-using-f-string",
-    "invalid-name",
     "global-statement",
+    "import-error",
+    "import-outside-toplevel",
+    "invalid-name",
+    "missing-class-docstring",
     "missing-function-docstring",
+    "missing-module-docstring",
     "too-few-public-methods",
+    "undefined-loop-variable",
 ]

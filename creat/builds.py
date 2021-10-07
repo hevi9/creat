@@ -1,24 +1,5 @@
-# """ Building source and action structure from .mk.yaml files. """
-#
-# # pylint: disable=undefined-loop-variable
-#
-# from __future__ import annotations
-#
-# from pathlib import Path
-# from typing import Any, Dict, Iterable, List
-#
-# import strictyaml  # type: ignore
-# from ruamel.yaml import YAML
-#
-# from . import CREAT_GLOB, get_console, schema
-# from .action.copy import Copy
-# from .action.move import Move
-# from .action.remove import Remove
-# from .action.shell import Shell
-# from .action.use import Use
-# from .index import Index
-# from .location import Location
-# from .source import Source
+from __future__ import annotations
+
 #
 # MAKE_ITEM_MAP = {
 #     "shell": Shell,
@@ -42,22 +23,8 @@
 #     toplevels = [schema.File(**d) for d in dicts]
 #
 #
-# def discover(roots: Iterable[Path], ignores: Iterable[str]) -> Iterable[Location]:
-#     def traverse(path_rel):
-#         path_abs = root / path_rel
-#         if path_abs.is_dir():
-#             for entry in path_abs.glob("*"):
-#                 for ignore_glob in ignores:
-#                     if entry.match("**/" + ignore_glob):
-#                         continue
-#                 yield from traverse(path_rel / entry.name)
-#         elif path_abs.is_file():
-#             for glob in CREAT_GLOB:
-#                 if path_abs.match("**/" + glob):
-#                     yield Location(path_root=root, path_rel=path_rel)
-#
-#     for root in roots:
-#         yield from traverse(Path("."))
+
+
 #
 #
 # def load(location: Location) -> Dict[str, Any]:

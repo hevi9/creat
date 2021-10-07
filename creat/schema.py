@@ -8,7 +8,7 @@ from typing import Any, List, Mapping, Optional, Sequence, Union
 from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 from typing_extensions import TypedDict
 
-from creat.location import Location
+from creat.discovers import Location
 
 
 class Item(BaseModel):

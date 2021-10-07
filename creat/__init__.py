@@ -1,18 +1,17 @@
-""" mk package common functions. """
 import logging
 import sys
 from colorsys import hls_to_rgb
 from enum import Enum
-from typing import Optional
+from pathlib import Path
+from typing import List, Optional
 
 from loguru import logger
 from rich.console import Console
-from rich.theme import Theme as RichTheme
+from rich.theme import Theme
 
 
 def version() -> str:
     """Get package version."""
-    # pylint: disable=import-outside-toplevel
     try:
         import importlib.metadata
 
@@ -37,7 +36,7 @@ def hsl(hue: float = 0.0, saturation: float = 1.0, light: float = 1.0) -> str:
     return "rgb({},{},{})".format(int(r * 255), int(g * 255), int(b * 255))
 
 
-class Theme(Enum):
+class Themes(str, Enum):
     """Rich theme options."""
 
     INFO = "info"
@@ -50,15 +49,15 @@ class Theme(Enum):
     """ Theme for error information. """
 
 
-def get_theme() -> RichTheme:
+def get_theme() -> Theme:
     """Get rich theme."""
     light = 0.5
     saturation = 0.4
-    return RichTheme(
+    return Theme(
         {
-            Theme.INFO.value: "{}".format(hsl(180.0, saturation, light)),
-            Theme.WARNING.value: "{}".format(hsl(30.0, saturation, light)),
-            Theme.ERROR.value: "{}".format(hsl(0.0, saturation, light)),
+            Themes.INFO.value: "{}".format(hsl(180.0, saturation, light)),
+            Themes.WARNING.value: "{}".format(hsl(30.0, saturation, light)),
+            Themes.ERROR.value: "{}".format(hsl(0.0, saturation, light)),
         }
     )
 
@@ -110,4 +109,7 @@ def setup_logger(level: str = "INFO"):
     logging.basicConfig(handlers=[_InterceptHandler()], level=0)
 
 
-CREAT_GLOB = ("*.creat.yaml", "*.creat.yml")
+CREAT_GLOB = (
+    "*.creat.yaml",
+    "*.creat.yml",
+)
