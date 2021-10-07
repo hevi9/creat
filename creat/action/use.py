@@ -52,6 +52,6 @@
 #
 #     @use_source.setter
 #     def use_source(self, value: Source):
-#         if value is self.source:  # TODO add recursively circular check
+#         if value is self.source:
 #             raise ValueError(f"Cannot use circular dependency for {self.source}")
 #         self._use_source = value

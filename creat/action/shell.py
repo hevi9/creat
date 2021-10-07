@@ -29,6 +29,5 @@
 #         ).check_returncode()  # nosec
 #
 #     def programs(self):
-#         # TODO: implement programs
 #         # parts = shlex.split(self.cmd_text)
 #         ...

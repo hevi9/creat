@@ -67,7 +67,7 @@ class Root:
         path_abs = self.path_root / path_rel
         path_abs.parent.mkdir(parents=True, exist_ok=True)
         text = dedent(text)
-        with open(path_abs, "w") as fo:
+        with open(path_abs, "w", encoding="utf-8") as fo:
             fo.write(text)
         return self.path_root, path_rel
 

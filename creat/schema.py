@@ -33,8 +33,7 @@ class Runnable(Item):
         if not self.env_:
             if self.parent and isinstance(self.parent, Runnable):
                 return self.parent.env
-            else:
-                return {}
+            return {}
         return self.env_
 
 
