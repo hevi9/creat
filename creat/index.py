@@ -3,11 +3,10 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Dict, Iterable, ForwardRef
+from typing import Dict, ForwardRef, Iterable
 
 from .ex import DuplicateSourceError
 from .schema import File, Source
-
 
 Index = ForwardRef("Index")
 

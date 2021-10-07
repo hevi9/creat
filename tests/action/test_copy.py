@@ -2,15 +2,14 @@
 from pathlib import Path
 
 import pytest
+from rich import print
 
-from creat.builds import update_index_from_roots, load
+from creat.builds import load, update_index_from_roots
 from creat.contexts import make_root_context
 from creat.index import Index
 from creat.location import Location
 from creat.run import run
 from creat.schema import File
-
-from rich import print
 
 
 @pytest.mark.skipif(False, reason="TODO")
