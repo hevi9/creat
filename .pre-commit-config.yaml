@@ -62,13 +62,20 @@ repos:
   #        require_serial: true
   #        name: Check code with pylint
 
-  - repo: local
-    hooks:
-      - id: mypy
-        name: Check python files with mypy
-        entry: mypy  --ignore-missing-imports
-        language: system
-        types: [ python ]
+  #  - repo: local
+  #    hooks:
+  #      - id: mypy
+  #        name: Check python files with mypy
+  #        entry: mypy  --ignore-missing-imports
+  #        language: system
+  #        types: [ python ]
+
+  -   repo: https://github.com/pre-commit/mirrors-mypy
+      rev: 'v0.910-1'
+      hooks:
+      -   id: mypy
+          name: Check python files with mypy
+
 
   # Test ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
