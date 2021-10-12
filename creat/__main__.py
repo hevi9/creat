@@ -89,10 +89,35 @@ def _tidy(text: str) -> str:
 #
 
 
+def name_completion(ctx: typer.Context, _args: List[str], incomplete: str):
+    # typer.echo(f"{args}", err=True)
+    valid_completion_items = [
+        ("Camila", "The reader of books."),
+        ("Carlos", "The writer of scripts."),
+        ("Sebastian", "The type hints guy."),
+    ]
+    # completion = []
+    # for name, help_text in valid_completion_items:
+    #     if name.startswith(incomplete):
+    #         completion_item = (name, help_text)
+    #         completion.append(completion_item)
+    # return completion
+    names = ctx.params.get("sources") or []
+    for name, help_text in valid_completion_items:
+        if name.startswith(incomplete) and name not in names:
+            yield name, help_text
+
+
 @app.command("list")
-def cmd_list():
+def cmd_list(
+    sources: List[str] = typer.Argument(
+        ...,
+        autocompletion=name_completion,
+    ),
+):
     """List sources."""
     p = get_console().print
+    p(sources)
     p(_state.roots)
 
     locations = list(discover(_state.roots, _state.ignore_globs))
