@@ -3,18 +3,18 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Any, List, Mapping, Sequence, Union
+from typing import Any, List, Mapping, Optional, Sequence, Union
 
-from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
+from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
 from typing_extensions import TypedDict
 
 from creat.discovers import Location
 
 
 class Item(BaseModel):
-    doc: str | None = None
+    doc: Optional[str] = None
     show: bool = True
-    parent: Item | None = None
+    parent: Optional[Item] = None
 
     @property
     def location(self) -> Location:
@@ -24,9 +24,9 @@ class Item(BaseModel):
 
 
 class Runnable(Item):
-    cd_: str | None = Field(alias="cd")
-    env_: Mapping[str, str] | None = Field(alias="env")
-    with_: Mapping[str, str] | None = Field(alias="with")
+    cd_: Optional[str] = Field(alias="cd")
+    env_: Optional[Mapping[str, str]] = Field(alias="env")
+    with_: Optional[Mapping[str, str]] = Field(alias="with")
 
     @property
     def env(self) -> Mapping[str, str]:
@@ -47,15 +47,15 @@ class Paths(TypedDict):
 
 
 class Copy(Action):
-    copy_: str | Paths = Field(alias="copy")
+    copy_: Union[str, Paths] = Field(alias="copy")
 
 
 class Move(Action):
-    move: str | Paths
+    move: Union[str, Paths]
 
 
 class Remove(Action):
-    remove: str | Sequence[Path]
+    remove: Union[str, Sequence[Path]]
 
 
 class Exe(Action):
@@ -72,19 +72,29 @@ class Use(Action):
 
 class Config(Runnable):
     config: Path
-    update: Any | None
-    remove: Any | None
+    update: Optional[Any]
+    remove: Optional[Any]
 
 
 class Source(Runnable):
     source: str
-    actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
+    # actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
+    actions: List[Union[Shell]]
+
+    @property
+    def sid(self) -> str:
+        if isinstance(self.parent, Location):
+            return str(self.parent.path_rel) + "/" + self.source
+        raise ValueError("parent not a Location")
 
 
 class File(Item):
     sources: List[Source]
-    location_: Location
+    _location: Location = PrivateAttr()
 
     @property
     def location(self) -> Location:
-        return self.location_
+        return self._location
+
+    # class Config:
+    #     validate_assignment = False

@@ -1,15 +1,30 @@
 from __future__ import annotations
 
-#
-# MAKE_ITEM_MAP = {
-#     "shell": Shell,
-#     "use": Use,
-#     "remove": Remove,
-#     "copy": Copy,
-#     "move": Move,
-# }
-#
-#
+from typing import Mapping
+
+from ruamel.yaml import YAML
+
+from creat.discovers import Location
+from creat.schema import File
+
+from . import ex
+
+yaml = YAML(typ="safe")
+
+
+def build_file(location: Location) -> File:
+    dict_data = yaml.load(location.path.resolve())
+    if not isinstance(dict_data, Mapping):
+        raise ex.ValidateError("File top level structure have to be mapping", location=location)
+    file = File(**dict_data)
+    file._location = location
+    for source in file.sources:
+        source.parent = file
+        for action in source.actions:
+            action.parent = source
+    return file
+
+
 # yaml = YAML()
 #
 #
@@ -23,8 +38,6 @@ from __future__ import annotations
 #     toplevels = [schema.File(**d) for d in dicts]
 #
 #
-
-
 #
 #
 # def load(location: Location) -> Dict[str, Any]:
@@ -64,19 +77,6 @@ from __future__ import annotations
 #     return source
 #
 #
-# def make_sources_from_file_yaml(location: Location) -> Iterable[Source]:
-#     """Make source item from yaml file."""
-#     console = get_console()
-#     with location.path.open() as fo:
-#         text = fo.read()
-#         if text.strip() == "":
-#             console.print(f"{location} is empty, ignoring")
-#             return
-#         data = strictyaml.load(text, label=str(location.path)).data
-#         if not isinstance(data, list):
-#             raise TypeError(f"Top content is not a list type: '{text}': {location}")
-#         for item in data:
-#             yield make_source_from_dict(item, location)
 #
 #
 # def find_mk_sources_from_roots(
