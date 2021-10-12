@@ -1,51 +1,43 @@
-# """ Index to contain and access sources. """
-#
-# from __future__ import annotations
-#
-# from functools import singledispatchmethod
-# from typing import Dict, ForwardRef, Iterable
-#
-# from .ex import DuplicateSourceError
-# from .schema import File, Source
-#
-# Index = ForwardRef("Index")
-#
-#
-# class Index:
-#     """Index to contain and access sources."""
-#
-#     _sources: Dict[str, Source]
-#
-#     def __init__(self):
-#         self._sources = {}
-#
-#     @singledispatchmethod
-#     def add(self, item) -> Index:
-#         raise NotImplementedError(
-#             f"{self.__class__.__name__}.add: not implemented for {type(item)}"
-#         )
-#
-#     @add.register
-#     def _(self, item: File) -> Index:
-#         for source in item.sources:
-#             self.add(source)
-#         return self
-#
-#     @add.register
-#     def _(self, item: Source) -> Index:
-#         if self._sources.get(item.id):
-#             raise DuplicateSourceError(
-#                 "already exists",
-#                 id2=item.id,
-#                 location=item.location,
-#             )
-#         self._sources[item.id] = item
-#         return self
-#
-#     @property
-#     def sources(self) -> Iterable[Source]:
-#         """Sources in index."""
-#         return self._sources.values()
+from __future__ import annotations
+
+from functools import singledispatchmethod
+from typing import Dict
+
+from .ex import DuplicateSourceError
+from .schema import File, Source
+
+
+class Index:
+
+    sources: Dict[str, Source]
+
+    def __init__(self):
+        self._sources = {}
+
+    @singledispatchmethod
+    def add(self, item) -> Index:
+        raise NotImplementedError(
+            f"{self.__class__.__name__}.add: not implemented for {type(item)}"
+        )
+
+    @add.register
+    def _(self, item: File) -> Index:
+        for source in item.sources:
+            self.add(source)
+        return self
+
+    @add.register  # type: ignore
+    def _(self, item: Source) -> Index:
+        if self._sources.get(item.sid):
+            raise DuplicateSourceError(
+                "already exists",
+                location=item.location,
+                source_id=item.sid,
+            )
+        self._sources[item.sid] = item
+        return self
+
+
 #
 #     def find(self, source_id: str) -> Source:
 #         """Find source by name."""

@@ -2,7 +2,9 @@ from pathlib import Path
 from typing import List
 
 import typer
+from loguru import logger
 
+from creat.builds import build_file
 from creat.discovers import discover
 
 from . import get_console, setup_logger
@@ -110,18 +112,20 @@ def name_completion(ctx: typer.Context, _args: List[str], incomplete: str):
 
 @app.command("list")
 def cmd_list(
-    sources: List[str] = typer.Argument(
-        ...,
+    _sources: List[str] = typer.Argument(
+        None,
         autocompletion=name_completion,
+        help="Sources to list.",
     ),
 ):
     """List sources."""
     p = get_console().print
-    p(sources)
-    p(_state.roots)
-
+    logger.debug("roots: {}", _state.roots)
     locations = list(discover(_state.roots, _state.ignore_globs))
-    get_console().print(locations)
+    files = [build_file(location) for location in locations]
+
+    p(files)
+
     # try:
     #     index = Index()
     #     update_index_from_roots(index, _paths, [])
