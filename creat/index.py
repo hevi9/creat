@@ -1,8 +1,9 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Dict
+from typing import Dict, Optional
 
+from . import SID_SEP
 from .ex import DuplicateSourceError
 from .schema import File, Source
 
@@ -12,7 +13,10 @@ class Index:
     sources: Dict[str, Source]
 
     def __init__(self):
-        self._sources = {}
+        self.sources = {}
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}({len(self.sources)})"
 
     @singledispatchmethod
     def add(self, item) -> Index:
@@ -21,56 +25,52 @@ class Index:
         )
 
     @add.register
-    def _(self, item: File) -> Index:
+    def _(self, item: File):
         for source in item.sources:
             self.add(source)
-        return self
 
     @add.register  # type: ignore
-    def _(self, item: Source) -> Index:
-        if self._sources.get(item.sid):
+    def _(self, item: Source):
+        if self.sources.get(item.sid):
             raise DuplicateSourceError(
                 "already exists",
                 location=item.location,
                 source_id=item.sid,
             )
-        self._sources[item.sid] = item
-        return self
+        self.sources[item.sid] = item
 
+    def find(self, sid: str) -> Source:
+        """Find source by name."""
+        return self.sources[sid]
 
-#
-#     def find(self, source_id: str) -> Source:
-#         """Find source by name."""
-#         return self._sources[source_id]
-#
-#     def find_from(self, use_source_name: str, from_source: Source) -> Source:
-#         """Find source starting from given source.
-#
-#         Relative lookup.
-#         """
-#         try:
-#             return self.find(use_source_name)
-#         except KeyError:
-#             pass
-#
-#         def look(parts):
-#             try:
-#                 return self.find("/".join(parts + [use_source_name]))
-#             except KeyError:
-#                 if not parts:
-#                     return None
-#                 parts.pop()
-#                 return look(parts)
-#
-#         source = look(from_source.id.split("/"))
-#         if not source:
-#             raise KeyError(f"Source {use_source_name} not found")
-#         return source
-#
-#     __instance: Index = None
-#
-#     @classmethod
-#     def get(cls) -> Index:
-#         if not cls.__instance:
-#             cls.__instance = Index()
-#         return cls.__instance
+    def find_from(self, use_source_name: str, from_source: Source) -> Source:
+        """Find source starting from given source.
+
+        Relative lookup.
+        """
+        try:
+            return self.find(use_source_name)
+        except KeyError:
+            pass
+
+        def look(parts):
+            try:
+                return self.find(SID_SEP.join(parts + [use_source_name]))
+            except KeyError:
+                if not parts:
+                    return None
+                parts.pop()
+                return look(parts)
+
+        source = look(from_source.sid.split(SID_SEP))
+        if not source:
+            raise KeyError(f"Source {use_source_name} not found")
+        return source
+
+    __instance: Optional[Index] = None
+
+    @classmethod
+    def instance(cls) -> Index:
+        if not cls.__instance:
+            cls.__instance = Index()
+        return cls.__instance

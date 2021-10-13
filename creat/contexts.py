@@ -4,8 +4,6 @@ from typing import Any, Mapping
 
 import jinja2
 
-from creat.ex import ValidateError
-
 env = jinja2.Environment(  # nosec
     variable_start_string="${",
     variable_end_string="}",
@@ -39,4 +37,4 @@ def validate(context: Mapping[str, Any]):
     """
     target = Path(context["target"])
     if target.exists():
-        raise ValidateError(f"{target} already exists")
+        raise FileExistsError(f"{target} already exists")

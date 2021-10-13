@@ -8,6 +8,7 @@ from typing import Any, List, Mapping, Optional, Sequence, Union
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
 from typing_extensions import TypedDict
 
+from creat import SID_SEP
 from creat.discovers import Location
 
 
@@ -36,9 +37,13 @@ class Runnable(Item):
             return {}
         return self.env_
 
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
+
 
 class Action(Runnable):
-    pass
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class Paths(TypedDict):
@@ -49,31 +54,52 @@ class Paths(TypedDict):
 class Copy(Action):
     copy_: Union[str, Paths] = Field(alias="copy")
 
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
+
 
 class Move(Action):
     move: Union[str, Paths]
+
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class Remove(Action):
     remove: Union[str, Sequence[Path]]
 
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
+
 
 class Exe(Action):
     exe: str
+
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class Shell(Action):
     shell: str
 
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
+
 
 class Use(Action):
     use: str
+
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class Config(Runnable):
     config: Path
     update: Optional[Any]
     remove: Optional[Any]
+
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class Source(Runnable):
@@ -83,9 +109,12 @@ class Source(Runnable):
 
     @property
     def sid(self) -> str:
-        if isinstance(self.parent, Location):
-            return str(self.parent.path_rel) + "/" + self.source
-        raise ValueError("parent not a Location")
+        if isinstance(self.parent, File):
+            return str(self.parent.location.path_rel) + SID_SEP + self.source
+        raise TypeError(f"parent {type(self.parent)} not a Location")
+
+    def run(self, context: Mapping[str, Any]):
+        raise NotImplementedError("")
 
 
 class File(Item):

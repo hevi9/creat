@@ -1,8 +1,11 @@
 sources:
+
   - source: source-1
+    doc: Source 01
     actions:
       - shell: ls -la
       - shell: ls -la
+
   - source: source-2
     actions:
-      - shell: ls -la
+      - shell: dir

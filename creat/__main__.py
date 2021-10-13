@@ -1,103 +1,108 @@
+import sys
+import time
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import typer
 from loguru import logger
+from rich.live import Live
+from rich.table import Table
+from watchgod import watch
 
-from creat.builds import build_file
-from creat.discovers import discover
+from creat.contexts import make_root_context, validate
 
 from . import get_console, setup_logger
+from .builds import build
+from .index import Index
+from .schema import File
+
+app = typer.Typer()
 
 
 class _state:
     roots: List[Path] = []
     ignore_globs: List[str] = [".git"]
+    _index: Optional[Index] = None
 
-
-app = typer.Typer()
+    @classmethod
+    def get_index(cls) -> Index:
+        if not cls._index:
+            cls._index = build(cls.roots, cls.ignore_globs)
+        return cls._index
 
 
 def _tidy(text: str) -> str:
     return " ".join(text.split())
 
 
-# def _print_status(index, paths):
-#     pass
-#     # ui.talk(
-#     #     "Have {num} sources in {paths}",
-#     #     num=len(index.sources),
-#     #     paths=",".join(str(p) for p in paths),
-#     # )
-#
-#
-#
-#
-# @app.command()
-# def new(
-#     source: str = typer.Argument(
-#         ...,
-#         help="Source name.",
-#     ),
-#     target: str = typer.Argument(
-#         ...,
-#         help="Target directory or file name. May not exists.",
-#     ),
-# ):
-#     """Make new target from given source."""
-#     try:
-#         index = Index()
-#         update_index_from_roots(index, _paths, [])
-#         _print_status(index, _paths)
-#         source_use = index.find(source)
-#         context = make_root_context(target)
-#         validate(context)
-#         run(source_use, context)
-#     except KeyError as ex:
-#         _console.print_exception()
-#         raise typer.Exit(1) from ex
-#     except Exception as ex:
-#         _console.print_exception()
-#         raise typer.Exit(1) from ex
-#
-#
-#
-#
-# @app.command()
-# def develop(
-#     source: str = typer.Argument(
-#         ...,
-#         help="Source to develop",
-#     )
-# ):
-#     """Develop sources."""
-#     # awatch()
-#
-#
-# @app.command()
-# def gen_json_schema(
-#     path: Optional[Path] = typer.Argument(
-#         None,
-#         help="File to write json schema",
-#     )
-# ):
-#     """Generate json schema"""
-#     file = sys.stdout
-#     if path:
-#         file = path.open("wt", encoding="utf-8")
-#     print(File.schema_json(), file=file)
-#     file.close()
-#
-#
+@app.command("new")
+def cmd_new(
+    source: str = typer.Argument(
+        ...,
+        help="Source name.",
+    ),
+    target: str = typer.Argument(
+        ...,
+        help="Target directory or file name. May not exists.",
+    ),
+):
+    """Make new target from given source."""
+    try:
+        index = _state.get_index()
+        source_use = index.find(source)
+        context = make_root_context(target)
+        validate(context)
+        source_use.run(context)
+    except Exception as ex:
+        get_console().print_exception()
+        raise typer.Exit(1) from ex
 
 
-def name_completion(ctx: typer.Context, _args: List[str], incomplete: str):
-    # typer.echo(f"{args}", err=True)
-    valid_completion_items = [
-        ("Camila", "The reader of books."),
-        ("Carlos", "The writer of scripts."),
-        ("Sebastian", "The type hints guy."),
-    ]
+@app.command("develop")
+def cmd_develop(
+    source: str = typer.Argument(
+        ...,
+        help="Source to develop",
+    ),
+    target: Path = typer.Argument(
+        ...,
+        help="Temporary target directory",
+    ),
+):
+    """Develop sources."""
+    try:
+        if target.exists():
+            raise FileExistsError(f"{str(target)}: already exists !")
+        index = _state.get_index()
+        src = index.find(source)
+        logger.debug(
+            "source={}, target={}, source-path={}",
+            source,
+            target,
+            src.location.path_root,
+        )
+        for changes in watch(src.location.path_root):
+            logger.debug("changes: {}", changes)
+            logger.debug("Creating new development target instance")
+            time.sleep(3.0)
+            logger.debug("done")
+    except Exception as ex:
+        get_console().print_exception()
+        raise typer.Exit(1) from ex
+
+
+def _list_completion(ctx: typer.Context, _args: List[str], incomplete: str):
+    # typer.echo(f"{_args}", err=True)
+    # valid_completion_items = [
+    #     ("Camila", "The reader of books."),
+    #     ("Carlos", "The writer of scripts."),
+    #     ("Sebastian", "The type hints guy."),
+    # ]
+    index = _state.get_index()
+    logger.debug("index {}", index)
+    valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
+    if not valid_completion_items:
+        raise ValueError(f"{index} empty")
     # completion = []
     # for name, help_text in valid_completion_items:
     #     if name.startswith(incomplete):
@@ -112,38 +117,49 @@ def name_completion(ctx: typer.Context, _args: List[str], incomplete: str):
 
 @app.command("list")
 def cmd_list(
-    _sources: List[str] = typer.Argument(
+    sources: List[str] = typer.Argument(
         None,
-        autocompletion=name_completion,
+        # autocompletion=_list_completion,
         help="Sources to list.",
     ),
 ):
     """List sources."""
-    p = get_console().print
-    logger.debug("roots: {}", _state.roots)
-    locations = list(discover(_state.roots, _state.ignore_globs))
-    files = [build_file(location) for location in locations]
+    logger.debug("sources: {}", sources)
+    try:
+        index = _state.get_index()
 
-    p(files)
+        def view():
+            table = Table(box=None)
+            table.add_column("Source")
+            table.add_column("Description")
+            for source in sorted(index.sources.values(), key=lambda s: s.sid):
+                show = True
+                if sources and not any(source.sid.startswith(s) for s in sources):
+                    show = False
+                if show and source.show:
+                    table.add_row(source.sid, source.doc)
+            return table
 
-    # try:
-    #     index = Index()
-    #     update_index_from_roots(index, _paths, [])
-    #     # ui.talk(
-    #     #     "Have {num} sources in {paths}",
-    #     #     num=len(index.sources),
-    #     #     paths=",".join(str(p) for p in CFG.paths),
-    #     # )
-    #     table = Table(box=None)
-    #     table.add_column("Source")
-    #     table.add_column("Description")
-    #     for source in sorted(index.sources, key=lambda s: s.id):
-    #         if source.show:
-    #             table.add_row(source.id, source.doc)
-    #     _console.print(table)
-    # except Exception as ex:
-    #     _console.print_exception()
-    #     raise typer.Exit(1) from ex
+        with Live(console=get_console(), auto_refresh=False) as live:
+            live.update(view(), refresh=False)
+    except Exception as ex:
+        get_console().print_exception()
+        raise typer.Exit(1) from ex
+
+
+@app.command("json-schema")
+def cmd_json_schema(
+    path: Optional[Path] = typer.Argument(
+        None,
+        help="File to write json schema",
+    )
+):
+    """Generate json schema."""
+    file = sys.stdout
+    if path:
+        file = path.open("wt", encoding="utf-8")
+    print(File.schema_json(), file=file)
+    file.close()
 
 
 @app.callback()
