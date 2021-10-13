@@ -112,3 +112,6 @@ CREAT_GLOB = (
     "*.creat.yaml",
     "*.creat.yml",
 )
+
+SID_SEP = "/"
+"""Source id separator."""

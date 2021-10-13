@@ -1,13 +1,16 @@
 from __future__ import annotations
 
-from typing import Mapping
+from pathlib import Path
+from typing import Iterable, Mapping
 
+from loguru import logger
 from ruamel.yaml import YAML
 
-from creat.discovers import Location
+from creat.discovers import Location, discover
 from creat.schema import File
 
 from . import ex
+from .index import Index
 
 yaml = YAML(typ="safe")
 
@@ -23,6 +26,16 @@ def build_file(location: Location) -> File:
         for action in source.actions:
             action.parent = source
     return file
+
+
+def build(roots: Iterable[Path], ignore_globs: Iterable[str]) -> Index:
+    logger.debug("roots: {}", roots)
+    locations = list(discover(roots, ignore_globs))
+    files = [build_file(location) for location in locations]
+    index = Index.instance()
+    for file in files:
+        index.add(file)
+    return index
 
 
 # yaml = YAML()
