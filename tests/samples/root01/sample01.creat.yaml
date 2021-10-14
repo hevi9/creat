@@ -3,9 +3,12 @@ sources:
   - source: source-1
     doc: Source 01
     actions:
-      - shell: ls -la
-      - shell: ls -la
-
-  - source: source-2
-    actions:
       - shell: dir
+      - shell: echo shell here
+
+  - source: source-2-target
+    doc: Show context variabeles
+    actions:
+      - shell: echo target=${target}
+      - shell: echo name=${name}
+      - shell: echo source=${source}
