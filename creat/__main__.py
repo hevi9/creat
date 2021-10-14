@@ -19,6 +19,11 @@ from .schema import File
 app = typer.Typer()
 
 
+# remove logger not to interfere with shell completion, add loggers later on
+# setup
+logger.remove()
+
+
 class _state:
     roots: List[Path] = []
     ignore_globs: List[str] = [".git"]
@@ -44,7 +49,6 @@ def _tidy(text: str) -> str:
 
 
 def _source_completion(ctx: typer.Context, incomplete: str):
-    logger.add("creat_completion.log")
     try:
         # get roots definition from main context
         index = _state.get_index(roots=ctx.parent.params.get("roots"))
@@ -62,9 +66,8 @@ def _source_completion(ctx: typer.Context, incomplete: str):
             if name.startswith(incomplete) and name not in names:
                 yield name, help_text
     except Exception:
+        logger.add("creat_completion.log")
         logger.exception("Can't make completion")
-    else:
-        logger.success("Completion ok")
 
 
 @app.command("new")

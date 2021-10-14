@@ -11,11 +11,11 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    TypedDict,
     Union,
 )
 
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
+from typing_extensions import TypedDict
 
 from creat import get_console
 from creat.contexts import render
