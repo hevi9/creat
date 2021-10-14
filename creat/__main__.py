@@ -1,7 +1,7 @@
 import sys
 import time
 from pathlib import Path
-from typing import List, Optional
+from typing import Iterable, List, Optional
 
 import typer
 from loguru import logger
@@ -25,9 +25,17 @@ class _state:
     _index: Optional[Index] = None
 
     @classmethod
-    def get_index(cls) -> Index:
+    def get_index(
+        cls,
+        roots: Optional[Iterable[Path]] = None,
+        ignore_globs: Optional[Iterable[str]] = None,
+    ) -> Index:
+        roots = roots or []
+        ignore_globs = ignore_globs or []
+        roots = set(cls.roots + list(roots))
+        ignore_globs = set(cls.ignore_globs + list(ignore_globs))
         if not cls._index:
-            cls._index = build(cls.roots, cls.ignore_globs)
+            cls._index = build(roots, ignore_globs)
         return cls._index
 
 
@@ -35,11 +43,36 @@ def _tidy(text: str) -> str:
     return " ".join(text.split())
 
 
+def _source_completion(ctx: typer.Context, incomplete: str):
+    logger.add("creat_completion.log")
+    try:
+        # get roots definition from main context
+        index = _state.get_index(roots=ctx.parent.params.get("roots"))
+        # logger.debug(
+        #     "index={}, params={}, parent.params={}",
+        #     index,
+        #     ctx.params,
+        #     ctx.parent.params,
+        # )
+        valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
+        if not valid_completion_items:
+            raise ValueError(f"{index} empty")
+        names = ctx.params.get("source") or []
+        for name, help_text in valid_completion_items:
+            if name.startswith(incomplete) and name not in names:
+                yield name, help_text
+    except Exception:
+        logger.exception("Can't make completion")
+    else:
+        logger.success("Completion ok")
+
+
 @app.command("new")
 def cmd_new(
     source: str = typer.Argument(
         ...,
         help="Source name.",
+        autocompletion=_source_completion,
     ),
     target: str = typer.Argument(
         ...,
@@ -91,35 +124,11 @@ def cmd_develop(
         raise typer.Exit(1) from ex
 
 
-def _list_completion(ctx: typer.Context, _args: List[str], incomplete: str):
-    # typer.echo(f"{_args}", err=True)
-    # valid_completion_items = [
-    #     ("Camila", "The reader of books."),
-    #     ("Carlos", "The writer of scripts."),
-    #     ("Sebastian", "The type hints guy."),
-    # ]
-    index = _state.get_index()
-    logger.debug("index {}", index)
-    valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
-    if not valid_completion_items:
-        raise ValueError(f"{index} empty")
-    # completion = []
-    # for name, help_text in valid_completion_items:
-    #     if name.startswith(incomplete):
-    #         completion_item = (name, help_text)
-    #         completion.append(completion_item)
-    # return completion
-    names = ctx.params.get("sources") or []
-    for name, help_text in valid_completion_items:
-        if name.startswith(incomplete) and name not in names:
-            yield name, help_text
-
-
 @app.command("list")
 def cmd_list(
     sources: List[str] = typer.Argument(
         None,
-        # autocompletion=_list_completion,
+        autocompletion=_source_completion,
         help="Sources to list.",
     ),
 ):
@@ -131,7 +140,7 @@ def cmd_list(
         def view():
             table = Table(box=None)
             table.add_column("Source")
-            table.add_column("Description")
+            table.add_column("Doc")
             for source in sorted(index.sources.values(), key=lambda s: s.sid):
                 show = True
                 if sources and not any(source.sid.startswith(s) for s in sources):
@@ -182,6 +191,7 @@ def main(
     ),
 ):
     _state.roots = roots
+    logger.debug("roots: {}", roots)
     setup_logger(level="TRACE" if debug else "INFO")
 
 

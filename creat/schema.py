@@ -1,21 +1,35 @@
-"""Schema for yaml files."""
-
 from __future__ import annotations
 
+import os
+import subprocess
 from pathlib import Path
-from typing import Any, List, Mapping, Optional, Sequence, Union
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Sequence,
+    TypedDict,
+    Union,
+)
 
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
-from typing_extensions import TypedDict
 
-from creat import SID_SEP
+from creat import get_console
+from creat.contexts import render
 from creat.discovers import Location
+
+if TYPE_CHECKING:
+    from creat.index import Index
 
 
 class Item(BaseModel):
-    doc: Optional[str] = None
+    doc: str = ""
     show: bool = True
     parent: Optional[Item] = None
+    with_: Optional[Mapping[str, Any]] = Field(alias="with")
 
     @property
     def location(self) -> Location:
@@ -23,22 +37,33 @@ class Item(BaseModel):
             raise ValueError(f"{self.__class__.__name__}.parent: not set")
         return self.parent.location
 
+    def update_index(self, index: Index) -> None:
+        """Update index on pass 2."""
+
 
 class Runnable(Item):
-    cd_: Optional[str] = Field(alias="cd")
+    cd_: Optional[Path] = Field(alias="cd")
     env_: Optional[Mapping[str, str]] = Field(alias="env")
-    with_: Optional[Mapping[str, str]] = Field(alias="with")
+
+    @property
+    def cd(self) -> Path:
+        if not self.cd_:
+            if self.parent and isinstance(self.parent, Runnable):
+                return self.parent.cd
+        return Path.cwd()
 
     @property
     def env(self) -> Mapping[str, str]:
-        if not self.env_:
-            if self.parent and isinstance(self.parent, Runnable):
-                return self.parent.env
-            return {}
-        return self.env_
+        env = self.env_ or {}
+        if self.parent and isinstance(self.parent, Runnable):
+            return {**self.parent.env, **env}
+        return {**os.environ, **env}
 
     def run(self, context: Mapping[str, Any]):
         raise NotImplementedError("")
+
+    def programs(self) -> Iterable[str]:
+        return []
 
 
 class Action(Runnable):
@@ -83,7 +108,19 @@ class Shell(Action):
     shell: str
 
     def run(self, context: Mapping[str, Any]):
-        raise NotImplementedError("")
+        cmd_text = render(self.shell, context)
+        get_console().print(
+            f"[magenta]shell:[/magenta] {cmd_text}",
+            style="bold on green",
+            justify="center",
+        )
+        # get_console().print(context)
+        subprocess.run(  # pylint: disable=subprocess-run-check
+            cmd_text,
+            shell=True,  # nosec
+            cwd=render(str(self.cd), context) if self.cd else None,
+            env=self.env,
+        ).check_returncode()  # nosec
 
 
 class Use(Action):
@@ -104,17 +141,39 @@ class Config(Runnable):
 
 class Source(Runnable):
     source: str
+
     # actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
     actions: List[Union[Shell]]
+
+    def __str__(self):
+        return f"{self.__class__.__name__}({self.sid})"
+
+    @property
+    def name(self) -> str:
+        return self.source
+
+    @property
+    def dir(self) -> str:
+        """Directory where the source is defined."""
+        return str(self.location.path.parent)
 
     @property
     def sid(self) -> str:
         if isinstance(self.parent, File):
-            return str(self.parent.location.path_rel) + SID_SEP + self.source
+            return str(self.parent.location.path_rel.parent / self.source).replace("\\", "/")
         raise TypeError(f"parent {type(self.parent)} not a Location")
 
-    def run(self, context: Mapping[str, Any]):
-        raise NotImplementedError("")
+    def run(self, context: Mapping[str, Any]) -> None:
+        for action in self.actions:
+            action.run(dict(context, source=self))
+
+    def update_index(self, index: Index) -> None:
+        for action in self.actions:
+            action.update_index(index)
+
+    def programs(self) -> Iterable[str]:
+        for action in self.actions:
+            yield from action.programs()
 
 
 class File(Item):
@@ -124,6 +183,3 @@ class File(Item):
     @property
     def location(self) -> Location:
         return self._location
-
-    # class Config:
-    #     validate_assignment = False
