@@ -10,7 +10,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-Jinja2 = "^2.11.2"
+Jinja2 = "^3.0.3"
 loguru = "^0.5.3"
 rich = "^10.4.0"
 #copier = "^5.1.0"
@@ -19,7 +19,7 @@ colorama = "^0.4.4"
 #shellingham = "^1.4.0" # does not work on windows
 watchgod = "^0.7"
 pydantic = "^1.8.2"
-typing-extensions = "^3.10.0"
+typing-extensions = "^4.0.0"
 "ruamel.yaml" = "^0.17.16"
 multidict = "^5.2.0"
 
@@ -33,10 +33,10 @@ aiohttp_cors = "^0.7.0"
 bandit = "^1.7.0"
 isort = "^5.8.0"
 pre-commit = "^2.9.3"
-mypy = "^0.902"
-pytest-cov = "^2.11.1"
-pytest-timeout = "^1.4.2"
-pytest-xprocess = "^0.17.1"
+mypy = "^0.910"
+pytest-cov = "^3.0.0"
+pytest-timeout = "^2.0.1"
+pytest-xprocess = "^0.18.1"
 types-Jinja2 = "^2.11.2"
 
 [tool.poetry.scripts]
