@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
-from creat import CREAT_GLOB
+from . import CREAT_GLOB
 
 
 @dataclass
