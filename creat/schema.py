@@ -17,12 +17,12 @@ from typing import (
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
 from typing_extensions import TypedDict
 
-from creat import get_console
-from creat.contexts import render
-from creat.discovers import Location
+from . import get_console
+from .contexts import render
+from .discovers import Location
 
 if TYPE_CHECKING:
-    from creat.index import Index
+    from .index import Index
 
 
 class Item(BaseModel):

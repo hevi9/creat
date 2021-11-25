@@ -6,11 +6,10 @@ from typing import Iterable, Mapping
 from loguru import logger
 from ruamel.yaml import YAML
 
-from creat.discovers import Location, discover
-from creat.schema import File
-
 from . import ex
+from .discovers import Location, discover
 from .index import Index
+from .schema import File
 
 yaml = YAML(typ="safe")
 

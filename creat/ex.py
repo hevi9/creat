@@ -1,6 +1,6 @@
 """ mk related exceptions. """
 
-from creat.discovers import Location
+from .discovers import Location
 
 
 class Error(Exception):

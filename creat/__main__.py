@@ -9,10 +9,9 @@ from rich.live import Live
 from rich.table import Table
 from watchgod import watch
 
-from creat.contexts import make_root_context, validate
-
 from . import get_console, setup_logger
 from .builds import build
+from .contexts import make_root_context, validate
 from .index import Index
 from .schema import File
 
