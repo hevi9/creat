@@ -12,6 +12,7 @@ from typing import (
     Optional,
     Sequence,
     Union,
+    Set,
 )
 
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
@@ -140,7 +141,7 @@ class Config(Runnable):
 
 
 class Source(Runnable):
-    source: str
+    source: Set[str]
 
     # actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
     actions: List[Union[Shell]]
@@ -160,7 +161,9 @@ class Source(Runnable):
     @property
     def sid(self) -> str:
         if isinstance(self.parent, File):
-            return str(self.parent.location.path_rel.parent / self.source).replace("\\", "/")
+            return str(self.parent.location.path_rel.parent / self.source).replace(
+                "\\", "/"
+            )
         raise TypeError(f"parent {type(self.parent)} not a Location")
 
     def run(self, context: Mapping[str, Any]) -> None:
@@ -170,10 +173,6 @@ class Source(Runnable):
     def update_index(self, index: Index) -> None:
         for action in self.actions:
             action.update_index(index)
-
-    def programs(self) -> Iterable[str]:
-        for action in self.actions:
-            yield from action.programs()
 
 
 class File(Item):

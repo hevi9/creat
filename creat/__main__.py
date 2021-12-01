@@ -18,8 +18,7 @@ from .schema import File
 app = typer.Typer()
 
 
-# remove logger not to interfere with shell completion, add loggers later on
-# setup
+# remove logger not to interfere with shell completion, add loggers later on setup
 logger.remove()
 
 
