@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from functools import singledispatchmethod
 from typing import Dict, Optional
+from multidict import MultiDict, MultiMapping
 
 from . import SID_SEP
 from .ex import DuplicateSourceError
@@ -10,10 +11,10 @@ from .schema import File, Source
 
 class Index:
 
-    sources: Dict[str, Source]
+    _sources: MultiDict[Source]
 
     def __init__(self):
-        self.sources = {}
+        self.sources = MultiDict()
 
     def __repr__(self):
         return f"{self.__class__.__name__}({len(self.sources)})"
@@ -66,11 +67,3 @@ class Index:
         if not source:
             raise KeyError(f"Source {use_source_name} not found")
         return source
-
-    __instance: Optional[Index] = None
-
-    @classmethod
-    def instance(cls) -> Index:
-        if not cls.__instance:
-            cls.__instance = Index()
-        return cls.__instance
