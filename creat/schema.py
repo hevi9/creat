@@ -141,30 +141,33 @@ class Config(Runnable):
 
 
 class Source(Runnable):
-    source: Set[str]
+    source: Set[str]  # fixme rename field to tags, yaml visible source
 
     # actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
     actions: List[Union[Shell]]
 
     def __str__(self):
-        return f"{self.__class__.__name__}({self.sid})"
+        return f"{self.__class__.__name__}({self.source})"
+
+    def __hash__(self):
+        return hash("".join(self.source))
 
     @property
-    def name(self) -> str:
-        return self.source
+    def name(self):
+        return "-".join(sorted(self.source))
 
     @property
     def dir(self) -> str:
         """Directory where the source is defined."""
         return str(self.location.path.parent)
 
-    @property
-    def sid(self) -> str:
-        if isinstance(self.parent, File):
-            return str(self.parent.location.path_rel.parent / self.source).replace(
-                "\\", "/"
-            )
-        raise TypeError(f"parent {type(self.parent)} not a Location")
+    # @property
+    # def sid(self) -> str:
+    #     if isinstance(self.parent, File):
+    #         return str(self.parent.location.path_rel.parent / self.source).replace(
+    #             "\\", "/"
+    #         )
+    #     raise TypeError(f"parent {type(self.parent)} not a Location")
 
     def run(self, context: Mapping[str, Any]) -> None:
         for action in self.actions:

@@ -5,16 +5,15 @@ from creat.__main__ import app
 runner = CliRunner()
 
 
-def test_cli_list():
-    r = runner.invoke(
-        app,
-        [
-            "--root",
-            "joo",
-            "list",
-        ],
-    )
-    print(r.stdout)
+class TestCLI:
+    def test_cli_list(self):
+        r = runner.invoke(
+            app,
+            [
+                "list",
+            ],
+        )
+        assert not r.exit_code, str(r) + r.stdout
 
 
 #

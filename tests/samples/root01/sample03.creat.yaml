@@ -1,0 +1,16 @@
+#sources:
+#
+#  - source: [source, copy]
+#    actions:
+#      - copy: file-src file-to
+#
+#  - source: [source, copy]
+#    actions:
+#      - copy:
+#          src: file-src
+#          dst: file-dst
+#
+#
+#  - source: [source, move]
+#    actions:
+#      - move: file-src file-dst

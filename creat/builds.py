@@ -1,12 +1,14 @@
 from __future__ import annotations
 
+import time
 from pathlib import Path
 from typing import Iterable, Mapping
 
 from loguru import logger
+from pydantic import ValidationError
 from ruamel.yaml import YAML
 
-from . import ex
+from . import exc
 from .discovers import Location, discover
 from .index import Index
 from .schema import File
@@ -16,24 +18,36 @@ yaml = YAML(typ="safe")
 
 def build_file(location: Location) -> File:
     dict_data = yaml.load(location.path.resolve())
+    if dict_data is None:  # allow empty files
+        return File(sources=[])
     if not isinstance(dict_data, Mapping):
-        raise ex.ValidateError("File top level structure have to be mapping", location=location)
-    file = File(**dict_data)
-    file._location = location
-    for source in file.sources:
-        source.parent = file
-        for action in source.actions:
-            action.parent = source
-    return file
+        raise exc.ValidateError(
+            "File top level structure have to be mapping", location=location
+        )
+    try:
+        file = File(**dict_data)
+        file._location = location
+        for source in file.sources:
+            source.parent = file
+            for action in source.actions:
+                action.parent = source
+        return file
+    except ValidationError as ex:
+        raise exc.ValidateError(str(ex), location=location)
 
 
 def build(roots: Iterable[Path], ignore_globs: Iterable[str]) -> Index:
-    logger.debug("roots: {}", roots)
+    logger.bind()
+    logger.debug("build: start", roots=roots, ignore_globs=ignore_globs)
+    start_time = time.monotonic()
     locations = list(discover(roots, ignore_globs))
     files = [build_file(location) for location in locations]
-    index = Index.instance()
+    index = Index()
     for file in files:
         index.add(file)
+    logger.debug(
+        "build: end", duration=time.monotonic() - start_time, file_count=len(files)
+    )
     return index
 
 
