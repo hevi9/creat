@@ -19,7 +19,8 @@ app = typer.Typer()
 
 
 # remove logger not to interfere with shell completion, add loggers later on setup
-logger.remove()
+# interferes with pytest logging
+# logger.remove()
 
 
 class _state:
@@ -127,27 +128,32 @@ def cmd_develop(
 
 @app.command("list")
 def cmd_list(
-    sources: List[str] = typer.Argument(
+    keys: List[str] = typer.Argument(
         None,
         autocompletion=_source_completion,
         help="Sources to list.",
     ),
 ):
     """List sources."""
-    logger.debug("sources: {}", sources)
+    logger.debug("sources: {}", keys)
     try:
         index = _state.get_index()
 
         def view():
+            sources_result = []
+            if not keys:
+                sources_result = index.sources.values()
+            else:
+                for source in index.sources.values():
+                    for key in keys:
+                        for source_key in source.source:
+                            if source_key.startswith(key):
+                                sources_result.append(source)
             table = Table(box=None)
             table.add_column("Source")
             table.add_column("Doc")
-            for source in sorted(index.sources.values(), key=lambda s: s.sid):
-                show = True
-                if sources and not any(source.sid.startswith(s) for s in sources):
-                    show = False
-                if show and source.show:
-                    table.add_row(source.sid, source.doc)
+            for source in sorted(sources_result, key=lambda s: s.name):
+                table.add_row(source.name, source.doc)
             return table
 
         with Live(console=get_console(), auto_refresh=False) as live:

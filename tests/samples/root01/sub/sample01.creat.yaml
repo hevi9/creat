@@ -1,12 +1,12 @@
 sources:
 
-  - source: source-1
+  - source: [source, shell]
     doc: Source 01
     actions:
       - shell: dir
       - shell: echo shell here
 
-  - source: source-2-target
+  - source: [source, shell, target]
     doc: Show context variabeles
     actions:
       - shell: echo target=${target}
