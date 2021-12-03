@@ -74,7 +74,7 @@ def cmd_new(
     source: str = typer.Argument(
         ...,
         help="Source name.",
-        autocompletion=_source_completion,
+        # autocompletion=_source_completion,
     ),
     target: str = typer.Argument(
         ...,
@@ -142,9 +142,9 @@ def cmd_list(
         def view():
             sources_result = []
             if not keys:
-                sources_result = index.sources.values()
+                sources_result = index.sources
             else:
-                for source in index.sources.values():
+                for source in index.sources:
                     for key in keys:
                         for source_key in source.source:
                             if source_key.startswith(key):
@@ -152,8 +152,15 @@ def cmd_list(
             table = Table(box=None)
             table.add_column("Source")
             table.add_column("Doc")
+            table.add_column("Root")
+            table.add_column("Path")
             for source in sorted(sources_result, key=lambda s: s.name):
-                table.add_row(source.name, source.doc)
+                table.add_row(
+                    source.name,
+                    source.doc,
+                    str(source.location.path_root),
+                    str(source.location.path_rel),
+                )
             return table
 
         with Live(console=get_console(), auto_refresh=False) as live:
@@ -198,8 +205,8 @@ def main(
     ),
 ):
     _state.roots = roots
-    logger.debug("roots: {}", roots)
     setup_logger(level="TRACE" if debug else "INFO")
+    logger.debug("roots: {}", roots)
 
 
 if __name__ == "__main__":

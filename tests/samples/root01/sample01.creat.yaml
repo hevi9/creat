@@ -1,13 +1,13 @@
 sources:
 
   - source: [shell]
-    doc: Source 01
+    doc: Test source 03
     actions:
       - shell: dir
       - shell: echo shell here
 
   - source: [shell, context]
-    doc: Show context variabeles
+    doc: Test source 04
     actions:
       - shell: echo target=${target}
       - shell: echo name=${name}

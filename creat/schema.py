@@ -131,7 +131,7 @@ class Use(Action):
         raise NotImplementedError("")
 
 
-class Config(Runnable):
+class ConfigFile(Runnable):
     config: Path
     update: Optional[Any]
     remove: Optional[Any]
@@ -154,7 +154,7 @@ class Source(Runnable):
 
     @property
     def name(self):
-        return "-".join(sorted(self.source))
+        return " ".join(sorted(self.source))
 
     @property
     def dir(self) -> str:

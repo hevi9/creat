@@ -19,6 +19,7 @@ yaml = YAML(typ="safe")
 def build_file(location: Location) -> File:
     dict_data = yaml.load(location.path.resolve())
     if dict_data is None:  # allow empty files
+        logger.debug("empty file", location=location)
         return File(sources=[])
     if not isinstance(dict_data, Mapping):
         raise exc.ValidateError(

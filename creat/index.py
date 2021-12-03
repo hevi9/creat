@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Dict, Optional, Iterable
+from typing import Dict, Optional, Iterable, Set
+
+from loguru import logger
 from multidict import MultiDict, MultiMapping
 
 from . import SID_SEP
@@ -20,8 +22,9 @@ class Index:
         return f"{self.__class__.__name__}({len(self._sources)})"
 
     @property
-    def sources(self) -> MultiMapping[Source]:
-        return self._sources
+    def sources(self) -> Set[Source]:
+        # sources exists multiple times per tag -> source mapping
+        return set(self._sources.values())
 
     @singledispatchmethod
     def add(self, item) -> Index:
@@ -37,7 +40,11 @@ class Index:
 
     @add.register  # type: ignore
     def _(self, item: Source):
+        logger.debug("Index.add(): add source {}", item)
         for name in item.source:
+            logger.debug(
+                "Index.add(): add name:source", item, name=name, source=str(item)
+            )
             self._sources.add(name, item)
         return self
 
