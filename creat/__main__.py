@@ -65,7 +65,7 @@ def _source_completion(ctx: typer.Context, incomplete: str):
             if name.startswith(incomplete) and name not in names:
                 yield name, help_text
     except Exception:
-        logger.add("creat_completion.log")
+        logger.add("creat_source_completion.log")
         logger.exception("Can't make completion")
 
 

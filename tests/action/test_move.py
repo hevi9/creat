@@ -1,7 +1,5 @@
 """ Test move operation. """
 
-import pytest
-
 
 # @pytest.mark.skip(reason="TODO")
 # def test_source_make_move(mkroot):

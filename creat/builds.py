@@ -22,9 +22,7 @@ def build_file(location: Location) -> File:
         logger.debug("empty file", location=location)
         return File(sources=[])
     if not isinstance(dict_data, Mapping):
-        raise exc.ValidateError(
-            "File top level structure have to be mapping", location=location
-        )
+        raise exc.ValidateError("File top level structure have to be mapping", location=location)
     try:
         file = File(**dict_data)
         file._location = location
@@ -46,9 +44,7 @@ def build(roots: Iterable[Path], ignore_globs: Iterable[str]) -> Index:
     index = Index()
     for file in files:
         index.add(file)
-    logger.debug(
-        "build: end", duration=time.monotonic() - start_time, file_count=len(files)
-    )
+    logger.debug("build: end", duration=time.monotonic() - start_time, file_count=len(files))
     return index
 
 

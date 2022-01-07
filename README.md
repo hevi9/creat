@@ -1,4 +1,4 @@
-# mk - Program runner to make new projects and files.
+# creat - Program runner to make new projects and files.
 
 # Status
 
@@ -7,7 +7,7 @@ Experimental
 # Install - TBD
 
 ```shell
-> pip install mk
+> pip install creat
 ```
 
 # Making your sources - TBD
