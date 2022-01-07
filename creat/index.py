@@ -1,13 +1,11 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Dict, Optional, Iterable, Set
+from typing import Iterable, Set
 
 from loguru import logger
-from multidict import MultiDict, MultiMapping
+from multidict import MultiDict
 
-from . import SID_SEP
-from .exc import DuplicateSourceError
 from .schema import File, Source
 
 
@@ -42,9 +40,7 @@ class Index:
     def _(self, item: Source):
         logger.debug("Index.add(): add source {}", item)
         for name in item.source:
-            logger.debug(
-                "Index.add(): add name:source", item, name=name, source=str(item)
-            )
+            logger.debug("Index.add(): add name:source", item, name=name, source=str(item))
             self._sources.add(name, item)
         return self
 

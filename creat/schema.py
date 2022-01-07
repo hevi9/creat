@@ -11,8 +11,8 @@ from typing import (
     Mapping,
     Optional,
     Sequence,
-    Union,
     Set,
+    Union,
 )
 
 from pydantic import BaseModel, Field, PrivateAttr  # pylint: disable=no-name-in-module
@@ -141,7 +141,7 @@ class ConfigFile(Runnable):
 
 
 class Source(Runnable):
-    source: Set[str]  # fixme rename field to tags, yaml visible source
+    source: Set[str]
 
     # actions: List[Union[Copy, Move, Remove, Exe, Shell, Use, Config]]
     actions: List[Union[Shell]]

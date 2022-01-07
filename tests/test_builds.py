@@ -1,13 +1,10 @@
-from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
 import pytest
-from ruamel.yaml import YAML
 
 from creat.builds import build
-from creat.schema import File
 
 cwd = Path(__file__).parent
 
@@ -29,7 +26,7 @@ def config_01():
 @pytest.mark.parametrize(
     "config",
     [
-        pytest.lazy_fixture("config_01"),
+        pytest.lazy_fixture("config_01"),  # pylint: disable=no-member
     ],
 )
 class TestBuilds:
