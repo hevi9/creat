@@ -1,11 +1,7 @@
-""" mk related exceptions. """
-
 from .discovers import Location
 
 
 class Error(Exception):
-    """Base exception."""
-
     location: Location
 
     def __str__(self):
