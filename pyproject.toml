@@ -87,6 +87,7 @@ disable = [
     "protected-access",
     "no-self-use",
     "broad-except",
+    "too-many-function-args",
 ]
 
 [tool.mypy]

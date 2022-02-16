@@ -11,7 +11,7 @@ from ruamel.yaml import YAML
 from . import exc
 from .discovers import Location, discover
 from .index import Index
-from .schema import File
+from .models.files import File
 
 yaml = YAML(typ="safe")
 

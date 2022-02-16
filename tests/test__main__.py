@@ -1,19 +1,27 @@
-from typer.testing import CliRunner
-
-from creat.__main__ import app
-
-runner = CliRunner()
-
-
-class TestCLI:
-    def test_cli_list(self):
-        r = runner.invoke(
-            app,
-            [
-                "list",
-            ],
-        )
-        assert not r.exit_code, str(r) + r.stdout
+# import click
+# import typer
+# from typer.testing import CliRunner
+#
+# from creat.__main__ import _source_complete, app
+#
+# runner = CliRunner()
+#
+#
+# class TestCLI:
+#     def test_cli_list(self):
+#         r = runner.invoke(
+#             app,
+#             [
+#                 "list",
+#             ],
+#         )
+#         assert not r.exit_code, str(r) + r.stdout
+#
+#
+# def test_source_complete():
+#     ctx = typer.Context(command=click.Command("dummy"))
+#     choices = list(_source_complete(ctx, "py"))
+#     assert choices
 
 
 #

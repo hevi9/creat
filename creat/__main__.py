@@ -1,5 +1,4 @@
 import sys
-import time
 from pathlib import Path
 from typing import Iterable, List, Optional
 
@@ -7,13 +6,12 @@ import typer
 from loguru import logger
 from rich.live import Live
 from rich.table import Table
-from watchgod import watch
+
+from creat.models.files import File
 
 from . import get_console, setup_logger
 from .builds import build
-from .contexts import make_root_context, validate
 from .index import Index
-from .schema import File
 
 app = typer.Typer()
 
@@ -23,7 +21,7 @@ app = typer.Typer()
 # logger.remove()
 
 
-class _state:
+class _State:
     roots: List[Path] = []
     ignore_globs: List[str] = [".git"]
     _index: Optional[Index] = None
@@ -47,97 +45,117 @@ def _tidy(text: str) -> str:
     return " ".join(text.split())
 
 
-def _source_completion(ctx: typer.Context, incomplete: str):
-    try:
-        # get roots definition from main context
-        index = _state.get_index(roots=ctx.parent.params.get("roots"))
-        # logger.debug(
-        #     "index={}, params={}, parent.params={}",
-        #     index,
-        #     ctx.params,
-        #     ctx.parent.params,
-        # )
-        valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
-        if not valid_completion_items:
-            raise ValueError(f"{index} empty")
-        names = ctx.params.get("source") or []
-        for name, help_text in valid_completion_items:
-            if name.startswith(incomplete) and name not in names:
-                yield name, help_text
-    except Exception:
-        logger.add("creat_source_completion.log")
-        logger.exception("Can't make completion")
+# def _source_complete(ctx: typer.Context, incomplete: str) -> Iterable[Tuple[str, str]]:
+#     try:
+#         index = _State.get_index(roots=ctx.parent.params.get("roots"))
+#         yield from _source_complete_real(ctx, incomplete, index)
+#     except Exception:
+#         logger.add("creat_source_complete.log")
+#         logger.exception("Can't make completion")
 
 
-@app.command("new")
-def cmd_new(
-    source: str = typer.Argument(
-        ...,
-        help="Source name.",
-        # autocompletion=_source_completion,
-    ),
-    target: str = typer.Argument(
-        ...,
-        help="Target directory or file name. May not exists.",
-    ),
-):
-    """Make new target from given source."""
-    try:
-        index = _state.get_index()
-        source_use = index.find(source)
-        context = make_root_context(target)
-        validate(context)
-        source_use.run(context)
-    except Exception as ex:
-        get_console().print_exception()
-        raise typer.Exit(1) from ex
+# def _source_complete_real(
+#     incomplete: str,
+#     index: Index,
+# ) -> Iterable[Tuple[str, str]]:
+#     valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
+#     if not valid_completion_items:
+#         raise ValueError(f"{index} empty")
+#     names = ctx.params.get("source") or []
+#
+#     for name, help_text in valid_completion_items:
+#         if name.startswith(incomplete) and name not in names:
+#             yield name, help_text
 
 
-@app.command("develop")
-def cmd_develop(
-    source: str = typer.Argument(
-        ...,
-        help="Source to develop",
-    ),
-    target: Path = typer.Argument(
-        ...,
-        help="Temporary target directory",
-    ),
-):
-    """Develop sources."""
-    try:
-        if target.exists():
-            raise FileExistsError(f"{str(target)}: already exists !")
-        index = _state.get_index()
-        src = index.find(source)
-        logger.debug(
-            "source={}, target={}, source-path={}",
-            source,
-            target,
-            src.location.path_root,
-        )
-        for changes in watch(src.location.path_root):
-            logger.debug("changes: {}", changes)
-            logger.debug("Creating new development target instance")
-            time.sleep(3.0)
-            logger.debug("done")
-    except Exception as ex:
-        get_console().print_exception()
-        raise typer.Exit(1) from ex
+# sources_by_tags(tags) -> sources
+
+
+# def name_complete_remains(names: Union[Iterable[str], Sized]) -> Iterable[str]:
+#     index = _State.get_index().index
+#     if not names:
+#         return set(index.keys())
+#     names = set(names)
+#     reduced = set()
+#     for name in names:
+#         for source in index.getall(name):
+#             reduced.add(source)
+#     remains = set()
+#     for source in reduced:
+#         if names.issubset(source.tags):
+#             remains.update(source.tags - names)
+#     return remains
+
+
+# @app.command("new")
+# def cmd_new(
+#     source: str = typer.Argument(
+#         ...,
+#         help="Source name.",
+#         # autocompletion=_source_completion,
+#     ),
+#     target: str = typer.Argument(
+#         ...,
+#         help="Target directory or file name. May not exists.",
+#     ),
+# ):
+#     """Make new target from given source."""
+#     try:
+#         index = _State.get_index()
+#         source_use = index.find(source)
+#         context = make_root_context(target)
+#         validate(context)
+#         source_use.run(context)
+#     except Exception as ex:
+#         get_console().print_exception()
+#         raise typer.Exit(1) from ex
+
+
+# @app.command("develop")
+# def cmd_develop(
+#     source: str = typer.Argument(
+#         ...,
+#         help="Source to develop",
+#     ),
+#     target: Path = typer.Argument(
+#         ...,
+#         help="Temporary target directory",
+#     ),
+# ):
+#     """Develop sources."""
+#     try:
+#         if target.exists():
+#             raise FileExistsError(f"{str(target)}: already exists !")
+#         index = _State.get_index()
+#         src = index.find(source)
+#         logger.debug(
+#             "source={}, target={}, source-path={}",
+#             source,
+#             target,
+#             src.location.path_root,
+#         )
+#         for changes in watch(src.location.path_root):
+#             logger.debug("changes: {}", changes)
+#             logger.debug("Creating new development target instance")
+#             time.sleep(3.0)
+#             logger.debug("done")
+#     except Exception as ex:
+#         get_console().print_exception()
+#         raise typer.Exit(1) from ex
 
 
 @app.command("list")
 def cmd_list(
     keys: List[str] = typer.Argument(
         None,
-        autocompletion=_source_completion,
+        # autocompletion=_source_complete,
         help="Sources to list.",
     ),
 ):
     """List sources."""
     logger.debug("sources: {}", keys)
     try:
-        index = _state.get_index()
+        index = _State.get_index()
 
         def view():
             sources_result = []
@@ -146,7 +164,7 @@ def cmd_list(
             else:
                 for source in index.sources:
                     for key in keys:
-                        for source_key in source.source:
+                        for source_key in source.tags:
                             if source_key.startswith(key):
                                 sources_result.append(source)
             table = Table(box=None)
@@ -204,7 +222,7 @@ def main(
         ),
     ),
 ):
-    _state.roots = roots
+    _State.roots = roots
     setup_logger(level="TRACE" if debug else "INFO")
     logger.debug("roots: {}", roots)
 
