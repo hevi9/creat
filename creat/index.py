@@ -6,7 +6,8 @@ from typing import Iterable, Set
 from loguru import logger
 from multidict import MultiDict
 
-from .schema import File, Source
+from .models.files import File
+from .models.sources import Source
 
 
 class Index:
@@ -39,8 +40,8 @@ class Index:
     @add.register  # type: ignore
     def _(self, item: Source):
         logger.debug("Index.add(): add source {}", item)
-        for name in item.source:
-            logger.debug("Index.add(): add name:source", item, name=name, source=str(item))
+        for name in item.tags:
+            logger.debug("Index.add(): add name:source", item, name=name, tags=str(item))
             self._sources.add(name, item)
         return self
 
@@ -51,34 +52,6 @@ class Index:
             return set(self._sources.values())
         for key in keys:
             for source in self._sources.getall(key):
-                if keys.issubset(source.source):
+                if keys.issubset(source.tags):
                     results.add(source)
         return results
-
-    # def find(self, sid: str) -> Source:
-    #     """Find source by name."""
-    #     return self.sources[sid]
-
-    # def find_from(self, use_source_name: str, from_source: Source) -> Source:
-    #     """Find source starting from given source.
-    #
-    #     Relative lookup.
-    #     """
-    #     try:
-    #         return self.find(use_source_name)
-    #     except KeyError:
-    #         pass
-    #
-    #     def look(parts):
-    #         try:
-    #             return self.find(SID_SEP.join(parts + [use_source_name]))
-    #         except KeyError:
-    #             if not parts:
-    #                 return None
-    #             parts.pop()
-    #             return look(parts)
-    #
-    #     source = look(from_source.sid.split(SID_SEP))
-    #     if not source:
-    #         raise KeyError(f"Source {use_source_name} not found")
-    #     return source
