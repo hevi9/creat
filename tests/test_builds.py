@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import Iterable
 
 import pytest
+from pytest_lazyfixture import lazy_fixture
 
 from creat.builds import build
 
@@ -26,7 +27,7 @@ def config_01():
 @pytest.mark.parametrize(
     "config",
     [
-        pytest.lazy_fixture("config_01"),  # pylint: disable=no-member
+        lazy_fixture("config_01"),
     ],
 )
 class TestBuilds:

@@ -70,13 +70,24 @@ repos:
         language: system
         types: [ python ]
         require_serial: true
-        name: Check code with pylint
+        name: Check python code with pylint
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: 'v0.930'
+  - repo: local
     hooks:
       - id: mypy
-        name: Check python files with mypy
+        entry: poetry run mypy
+        args: ["--ignore-missing-imports", "--scripts-are-modules"]
+        language: system
+        types: [ python ]
+        require_serial: true
+        name: Check python code with mypy
+
+# does not catch tests/test_builds.py:29: error: Module has no attribute "lazy_fixture"
+#  - repo: https://github.com/pre-commit/mirrors-mypy
+#    rev: 'v0.930'
+#    hooks:
+#      - id: mypy
+#        name: Check python files with mypy
 
 #  - repo: https://github.com/pycqa/pylint
 #    rev: v2.11.1
