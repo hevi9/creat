@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field  # pylint: disable=no-name-in-module
 from creat.discovers import Location
 
 if TYPE_CHECKING:
-    from creat.index import Index
+    from creat.indexes import Index
 
 
 class Item(BaseModel):
