@@ -10,7 +10,7 @@ from ruamel.yaml import YAML
 
 from . import exc
 from .discovers import Location, discover
-from .index import Index
+from .indexes import Index
 from .models.files import File
 
 yaml = YAML(typ="safe")
@@ -35,7 +35,7 @@ def build_file(location: Location) -> File:
         raise exc.ValidateError(str(ex), location=location)
 
 
-def build(roots: Iterable[Path], ignore_globs: Iterable[str]) -> Index:
+def build_index(roots: Iterable[Path], ignore_globs: Iterable[str]) -> Index:
     logger.bind()
     logger.debug("build: start", roots=roots, ignore_globs=ignore_globs)
     start_time = time.monotonic()

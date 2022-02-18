@@ -10,8 +10,8 @@ from rich.table import Table
 from creat.models.files import File
 
 from . import get_console, setup_logger
-from .builds import build
-from .index import Index
+from .builds import build_index
+from .indexes import Index
 
 app = typer.Typer()
 
@@ -37,7 +37,7 @@ class _State:
         roots = set(cls.roots + list(roots))
         ignore_globs = set(cls.ignore_globs + list(ignore_globs))
         if not cls._index:
-            cls._index = build(roots, ignore_globs)
+            cls._index = build_index(roots, ignore_globs)
         return cls._index
 
 

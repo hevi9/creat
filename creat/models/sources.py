@@ -6,15 +6,14 @@ from .actions.shell import Shell
 from .runnables import Runnable
 
 if TYPE_CHECKING:
-    from ..index import Index
+    from ..indexes import Index
 
 
 class Source(Runnable):
     tags: Set[str]
-
     actions: List[Union[Shell]]
 
-    def __str__(self):
+    def __repr__(self):
         return f"{self.__class__.__name__}({self.tags})"
 
     def __hash__(self):

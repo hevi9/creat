@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import os
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Optional
+from typing import Any, Mapping, Optional
 
 from pydantic import Field
 
@@ -29,6 +29,3 @@ class Runnable(Item):
 
     def run(self, context: Mapping[str, Any]):
         raise NotImplementedError("")
-
-    def programs(self) -> Iterable[str]:
-        return []

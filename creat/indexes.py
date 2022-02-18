@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Iterable, Set
+from typing import Iterable, Set, ValuesView
 
 from loguru import logger
-from multidict import MultiDict
+from multidict import MultiDict, MutableMultiMapping
 
 from .models.files import File
 from .models.sources import Source
@@ -12,18 +12,17 @@ from .models.sources import Source
 
 class Index:
 
-    _sources: MultiDict[Source]
+    _tag_to_sources: MutableMultiMapping[Source]
 
     def __init__(self):
-        self._sources = MultiDict()
+        self._tag_to_sources = MultiDict()
 
     def __repr__(self):
-        return f"{self.__class__.__name__}({len(self._sources)})"
+        return f"{self.__class__.__name__}({len(self._tag_to_sources)})"
 
     @property
-    def sources(self) -> Set[Source]:
-        # sources exists multiple times per tag -> source mapping
-        return set(self._sources.values())
+    def sources(self) -> ValuesView[Source]:
+        return self._tag_to_sources.values()
 
     @singledispatchmethod
     def add(self, item) -> Index:
@@ -42,16 +41,15 @@ class Index:
         logger.debug("Index.add(): add source {}", item)
         for name in item.tags:
             logger.debug("Index.add(): add name:source", item, name=name, tags=str(item))
-            self._sources.add(name, item)
+            self._tag_to_sources.add(name, item)
         return self
 
-    def get(self, keys: Iterable[str]) -> Iterable[Source]:
-        keys = set(keys)
+    def get(self, tags: Set[str]) -> Iterable[Source]:
+        if not tags:
+            return self._tag_to_sources.values()
         results = set()
-        if not keys:
-            return set(self._sources.values())
-        for key in keys:
-            for source in self._sources.getall(key):
-                if keys.issubset(source.tags):
+        for tag in tags:
+            for source in self._tag_to_sources.getall(tag):
+                if tags.issubset(source.tags):
                     results.add(source)
         return results
