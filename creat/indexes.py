@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from functools import singledispatchmethod
-from typing import Iterable, Set, ValuesView
+from typing import Collection, Optional, Set
 
 from loguru import logger
 from multidict import MultiDict, MutableMultiMapping
@@ -21,8 +21,8 @@ class Index:
         return f"{self.__class__.__name__}({len(self._tag_to_sources)})"
 
     @property
-    def sources(self) -> ValuesView[Source]:
-        return self._tag_to_sources.values()
+    def sources(self) -> Collection[Source]:
+        return set(self._tag_to_sources.values())
 
     @singledispatchmethod
     def add(self, item) -> Index:
@@ -44,12 +44,36 @@ class Index:
             self._tag_to_sources.add(name, item)
         return self
 
-    def get(self, tags: Set[str]) -> Iterable[Source]:
+    def get(self, tags: Optional[Set[str]] = None) -> Collection[Source]:
+        """Get sources based in index.tags set difference tags.
+
+        Args:
+            tags: Tags to define difference. Empty set or None results all
+            sources in index. Non-existent tags raises KeyError. All matching
+            tags results one source.
+        """
         if not tags:
-            return self._tag_to_sources.values()
+            return set(self._tag_to_sources.values())
         results = set()
         for tag in tags:
             for source in self._tag_to_sources.getall(tag):
                 if tags.issubset(source.tags):
                     results.add(source)
+        return results
+
+    def get_tags(self, tags: Optional[Set[str]] = None) -> Collection[str]:
+        """Get index.tags set difference tags.
+
+        Args:
+            tags: Tags to define difference. Empty set or None results all
+            tags in index. Non-existent tags raises KeyError. All matching
+            tags results empty collection.
+        """
+        if not tags:
+            return set(self._tag_to_sources.keys())
+        results = set()
+        for tag in tags:
+            for source in self._tag_to_sources.getall(tag):
+                if tags.issubset(source.tags):
+                    results.update(source.tags - tags)
         return results
