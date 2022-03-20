@@ -48,24 +48,27 @@ def _tidy(text: str) -> str:
 # def _source_complete(ctx: typer.Context, incomplete: str) -> Iterable[Tuple[str, str]]:
 #     try:
 #         index = _State.get_index(roots=ctx.parent.params.get("roots"))
+# names = ctx.params.get("source") or []
 #         yield from _source_complete_real(ctx, incomplete, index)
 #     except Exception:
 #         logger.add("creat_source_complete.log")
 #         logger.exception("Can't make completion")
 
 
-# def _source_complete_real(
-#     incomplete: str,
+# def _tags_complete_real(
+#     tags_given: Set[str],
+#     tag_incomplete: str,
 #     index: Index,
-# ) -> Iterable[Tuple[str, str]]:
-#     valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
-#     if not valid_completion_items:
-#         raise ValueError(f"{index} empty")
-#     names = ctx.params.get("source") or []
-#
-#     for name, help_text in valid_completion_items:
-#         if name.startswith(incomplete) and name not in names:
-#             yield name, help_text
+# ) -> Collection[Tuple[str, str]]:  # name, help
+#     for tag in index.get_tags_diff(tags_given):
+#         if tag.startswith(tag_incomplete):
+#             yield tag, ""
+# valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
+# if not valid_completion_items:
+#     raise ValueError(f"{index} empty")
+# for name, help_text in valid_completion_items:
+#     if name.startswith(tag_incomplete) and name not in tags_given:
+#         yield name, help_text
 
 
 # sources_by_tags(tags) -> sources
