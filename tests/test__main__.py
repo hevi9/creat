@@ -2,7 +2,25 @@
 # import typer
 # from typer.testing import CliRunner
 #
-# from creat.__main__ import _source_complete, app
+
+# noinspection PyProtectedMember
+
+
+# @pytest.fixture(scope="function")
+# def index_01():
+#     index = Index()
+#     index.add(Source(tags={"basic", "shell"}, actions=[], cd=None, env=None))
+#     index.add(Source(tags={"context", "shell"}, actions=[], cd=None, env=None))
+#     index.add(Source(tags={"shell", "source"}, actions=[], cd=None, env=None))
+#     index.add(Source(tags={"shell", "source", "target"}, actions=[], cd=None, env=None))
+#     yield index
+#
+#
+# def test_tags_complete_real(index_01):
+#     result = list(_tags_complete_real({"basic"}, "bas", index_01))
+#     print(result)
+
+
 #
 # runner = CliRunner()
 #

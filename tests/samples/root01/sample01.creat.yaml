@@ -1,12 +1,12 @@
 sources:
 
-  - source: [shell]
+  - tags: [ shell, basic ]
     doc: Test source 03
     actions:
       - shell: dir
       - shell: echo shell here
 
-  - source: [shell, context]
+  - tags: [ shell, context ]
     doc: Test source 04
     actions:
       - shell: echo target=${target}

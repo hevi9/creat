@@ -13,6 +13,9 @@ class File(Item):
     sources: List[Source]
     _location: Location = PrivateAttr()
 
+    def post_init(self, location: Location):
+        self._location = location
+
     @property
     def location(self) -> Location:
         return self._location

@@ -1,6 +1,6 @@
 import sys
 from pathlib import Path
-from typing import Iterable, List, Optional
+from typing import Collection, Iterable, List, Optional, Set
 
 import typer
 from loguru import logger
@@ -45,33 +45,26 @@ def _tidy(text: str) -> str:
     return " ".join(text.split())
 
 
-# def _source_complete(ctx: typer.Context, incomplete: str) -> Iterable[Tuple[str, str]]:
-#     try:
-#         index = _State.get_index(roots=ctx.parent.params.get("roots"))
-# names = ctx.params.get("source") or []
-#         yield from _source_complete_real(ctx, incomplete, index)
-#     except Exception:
-#         logger.add("creat_source_complete.log")
-#         logger.exception("Can't make completion")
+def _tags_complete(ctx: typer.Context, incomplete: str) -> Collection[str]:
+    try:
+        if ctx.parent is not None:
+            index = _State.get_index(roots=ctx.parent.params.get("roots"))
+        else:
+            index = _State.get_index()
+        tags_given = set(ctx.params["tags"])
+        yield from _tags_complete_real(tags_given, incomplete, index)
+    except Exception as ex:
+        yield f"Completion error: {repr(ex)}"
 
 
-# def _tags_complete_real(
-#     tags_given: Set[str],
-#     tag_incomplete: str,
-#     index: Index,
-# ) -> Collection[Tuple[str, str]]:  # name, help
-#     for tag in index.get_tags_diff(tags_given):
-#         if tag.startswith(tag_incomplete):
-#             yield tag, ""
-# valid_completion_items = [(s.sid, s.doc) for s in index.sources.values()]
-# if not valid_completion_items:
-#     raise ValueError(f"{index} empty")
-# for name, help_text in valid_completion_items:
-#     if name.startswith(tag_incomplete) and name not in tags_given:
-#         yield name, help_text
-
-
-# sources_by_tags(tags) -> sources
+def _tags_complete_real(
+    tags_given: Set[str],
+    tag_incomplete: str,
+    index: Index,
+) -> Collection[str]:
+    for tag in index.get_tags(tags_given):
+        if tag.startswith(tag_incomplete):
+            yield tag
 
 
 # def name_complete_remains(names: Union[Iterable[str], Sized]) -> Iterable[str]:
@@ -149,24 +142,24 @@ def _tidy(text: str) -> str:
 
 @app.command("list")
 def cmd_list(
-    keys: List[str] = typer.Argument(
+    tags: List[str] = typer.Argument(
         None,
-        # autocompletion=_source_complete,
+        autocompletion=_tags_complete,
         help="Sources to list.",
     ),
 ):
     """List sources."""
-    logger.debug("sources: {}", keys)
+    logger.debug("sources: {}", tags)
     try:
         index = _State.get_index()
 
         def view():
             sources_result = []
-            if not keys:
+            if not tags:
                 sources_result = index.sources
             else:
                 for source in index.sources:
-                    for key in keys:
+                    for key in tags:
                         for source_key in source.tags:
                             if source_key.startswith(key):
                                 sources_result.append(source)
