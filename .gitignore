@@ -5,3 +5,4 @@ __pycache__
 .*[Cc]ache*/
 *.log
 .doit.*
+.venv
