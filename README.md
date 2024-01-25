@@ -1,35 +1,19 @@
-# creat - Program runner to make new projects and files.
+# creat -- experimental ..
 
-# Status
+# Install
 
-Experimental
+Requirements
 
-# Install - TBD
+* Python 3.10+
+* pipx
 
 ```shell
-> pip install creat
+pipx install git+https://git@github.com/hevi9/creat.git
 ```
 
-# Making your sources - TBD
 
+# Run
 
-# Development deployment and conventions
-
-Install python poetry if not yet installed:
-
-https://python-poetry.org/docs/#installation
-
-Install dependencies, development tools and project itself as edit mode:
 ```shell
-> poetry install
-```
-
-Install pre-commit for validating code, validations required for contributions:
-```shell
-> poetry run pre-commit install
-```
-
-Validation is made on every commit. To validate code via cli run:
-```shell
-> pre-commit run -a
+creat --help
 ```
