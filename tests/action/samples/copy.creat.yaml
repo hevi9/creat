@@ -1,6 +1,0 @@
-sources:
-  - source: copy file
-    actions:
-      - copy:
-          src: file-src
-          dst: file-dst
