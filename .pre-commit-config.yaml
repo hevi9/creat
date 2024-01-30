@@ -23,3 +23,10 @@ repos:
     types: [ python ]
     require_serial: true
     name: check python files with mypy
+
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  rev: v0.1.15
+  hooks:
+  - id: ruff
+    args: [ --fix ]
+  - id: ruff-format
