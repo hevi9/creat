@@ -33,4 +33,4 @@ def _sample(
         run(["git", "-C", str(sample_path), "commit", "-m", "initial"])
     else:
         print("update", sample_path, "from", scaffold_path)
-        worker.run_update()
+        worker.run_recopy()
