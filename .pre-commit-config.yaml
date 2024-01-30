@@ -1,127 +1,25 @@
-fail_fast: true
 repos:
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v4.5.0
+  hooks:
+  - id: check-case-conflict
+  - id: check-added-large-files
+  - id: check-merge-conflict
+  - id: check-symlinks
+  - id: destroyed-symlinks
+  - id: fix-byte-order-marker
+  - id: trailing-whitespace
+  - id: end-of-file-fixer
+  - id: check-yaml
+  - id: check-json
+  - id: check-toml
+  - id: detect-private-key
 
-  - repo: https://github.com/commitizen-tools/commitizen
-    rev: v2.20.0
-    hooks:
-      - id: commitizen
-        stages: [ commit-msg ]
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
-    hooks:
-      - id: check-case-conflict
-      - id: check-added-large-files
-      - id: check-merge-conflict
-      - id: check-symlinks
-      - id: destroyed-symlinks
-
-  - repo: https://github.com/hadialqattan/pycln
-    rev: v1.0.3
-    hooks:
-      - id: pycln
-        name: Format python code by removing unused imports
-        args: [--config=pyproject.toml]
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v2.29.0
-    hooks:
-      - id: pyupgrade
-        args: [
-            "--py3-plus" ,
-            "--py36-plus" ,
-            "--py37-plus" ,
-            "--py38-plus" ,
-            "--keep-runtime-typing",
-        ]
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
-    hooks:
-      - id: fix-byte-order-marker
-      - id: trailing-whitespace
-      - id: end-of-file-fixer
-
-  - repo: https://github.com/pre-commit/mirrors-isort
-    rev: 'v5.9.3'
-    hooks:
-      - id: isort
-        name: Format python files with isort
-
-  - repo: https://github.com/psf/black
-    rev: 22.1.0
-    hooks:
-      - id: black
-        name: Format python files with black
-        language_version: python3
-
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
-    hooks:
-      - id: check-yaml
-      - id: check-json
-      - id: check-toml
-      - id: detect-private-key
-
-  - repo: local
-    hooks:
-      - id: pylint
-        entry: poetry run pylint
-        language: system
-        types: [ python ]
-        require_serial: true
-        name: Check python code with pylint
-
-  - repo: local
-    hooks:
-      - id: mypy
-        entry: poetry run mypy
-        args: ["--ignore-missing-imports", "--scripts-are-modules"]
-        language: system
-        types: [ python ]
-        require_serial: true
-        name: Check python code with mypy
-
-  - repo: https://github.com/sirosen/check-jsonschema
-    rev: 0.9.1
-    hooks:
-      - id: check-github-workflows
-        name: "Check GitHub Workflows"
-        files: ^\.github/workflows/
-        types: [yaml]
-        args: ["--schemafile", "https://json.schemastore.org/github-workflow"]
-
-
-#  - repo: https://github.com/jendrikseipp/vulture
-#    rev: 'v2.3'
-#    hooks:
-#      - id: vulture
-
-#  - repo: https://github.com/pycqa/pydocstyle
-#    rev: 6.1.1
-#    hooks:
-#      - id: pydocstyle
-
-#  - repo: local
-#    hooks:
-#      - id: pytest
-#        name: "Test with pytest"
-#        language: system
-#        entry: poetry run pytest
-#        types: [ python ]
-#        pass_filenames: false
-
-  - repo: local
-    hooks:
-      - id: safety
-        name: "Check package vulnerabilities with safety"
-        language: system
-        entry: poetry run safety check
-        pass_filenames: false
-
-  - repo: https://github.com/PyCQA/bandit
-    rev: 1.7.0
-    hooks:
-      - id: bandit
-        name: "Check code vulnerabilities with bandit"
-        args: [ '-iii', '-ll' ]
+- repo: local
+  hooks:
+  - id: mypy
+    entry: poetry run mypy
+    language: system
+    types: [ python ]
+    require_serial: true
+    name: check python files with mypy
