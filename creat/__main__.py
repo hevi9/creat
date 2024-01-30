@@ -5,9 +5,10 @@ import typer
 from . import __version__, app
 
 
-def _version() -> None:
-    typer.echo(f"creat {__version__}")
-    raise typer.Exit(0)
+def _version(value: bool) -> None:
+    if value:
+        typer.echo(f"creat {__version__}")
+        raise typer.Exit(0)
 
 
 @app.callback()
@@ -23,6 +24,8 @@ def main(
 ) -> None:
     """."""
 
+
+from . import sample  # noqa
 
 if __name__ == "__main__":
     app()
