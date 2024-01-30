@@ -1,37 +1,24 @@
-from pathlib import Path
-
 DOIT_CONFIG = {
     "action_string_formatting": "new",
     "verbosity": 2,
-    "default_tasks": ["build"],
+    "default_tasks": ["local"],
 }
 
-root = Path.cwd()
 
-
-class prg:
-    creat = "creat"
-
-
-class files:
-    models = list(root.rglob("./creat/models/**/*.py"))
-    json_schema = Path("./json-schema/creat.json")
-
-
-def task_schema():
-    """Create json-schema for .create.yaml file validation."""
+def task_local():
+    """Prepare local environment."""
     return {
-        "targets": [files.json_schema],
-        "file_dep": files.models,
         "actions": [
-            [prg.creat, "json-schema", files.json_schema],
+            "poetry install",
+            "pre-commit install"
         ],
     }
 
 
-def task_build():
-    """Build project"""
+def task_check():
+    """Check files."""
     return {
-        "actions": None,
-        "task_dep": ["schema"],
+        "actions": [
+            "pre-commit run -a"
+        ],
     }
