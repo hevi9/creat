@@ -8,7 +8,10 @@ DOIT_CONFIG = {
 def task_local():
     """Prepare local environment."""
     return {
-        "actions": ["poetry install", "pre-commit install"],
+        "actions": [
+            "poetry install",
+            "pre-commit install",
+        ],
     }
 
 
