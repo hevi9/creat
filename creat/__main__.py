@@ -35,7 +35,7 @@ def main(
             data = json.load(fo)
             config_data = GlobalConfig(**data)
     except FileNotFoundError:
-        config_data = GlobalConfig()  # type: ignore
+        config_data = GlobalConfig()
     set_global_config(config_data)
 
 
