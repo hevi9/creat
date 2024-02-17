@@ -1,10 +1,11 @@
-import json
 from pathlib import Path
-from typing import Type, TypeVar
+from typing import Type, TypeVar, Generic
 
 from json_source_map import calculate  # type: ignore
 from pydantic import BaseModel, Field, ConfigDict
 from pydantic_core import ValidationError
+
+T_Model = TypeVar("T_Model", bound=BaseModel)
 
 
 class ShellRun(BaseModel):
@@ -29,30 +30,62 @@ class ScaffoldConfig(BaseModel):
     sample: SampleConfig = Field(default_factory=SampleConfig)
 
 
-class GlobalConfig(BaseModel):
+class UserConfig(BaseModel):
+    user_config_path: Path = Field(
+        Path("~/.config/creat").expanduser(),
+        description="User config file path.",
+    )
     scaffold_config_name: str = Field(
         ".creat.json",
         description="Name of project local creat config file",
     )
 
 
-__global_config: GlobalConfig | None = None
+class ConfigAccess(Generic[T_Model]):
+    _config: T_Model | None = None
+
+    def init(self, config: T_Model) -> T_Model:
+        self._config = config
+        return self._config
+
+    def __call__(self) -> T_Model:
+        if self._config is None:
+            raise RuntimeError("Config is not initialized.")
+        return self._config
 
 
-def set_global_config(config: GlobalConfig) -> GlobalConfig:
-    global __global_config
-    __global_config = config
-    return __global_config
+x_user_config: ConfigAccess[UserConfig] = ConfigAccess[UserConfig]()
+
+x_scaffold_config: ConfigAccess[ScaffoldConfig] = ConfigAccess[ScaffoldConfig]()
+
+__user_config: UserConfig | None = None
+__scaffold_config: ScaffoldConfig | None = None
 
 
-def get_global_config() -> GlobalConfig:
-    global __global_config
-    if __global_config is None:
+def init_user_config(config: UserConfig) -> UserConfig:
+    global __user_config
+    __user_config = config
+    return __user_config
+
+
+def user_config() -> UserConfig:
+    global __user_config
+    if __user_config is None:
         raise ValueError("Global config not set")
-    return __global_config
+    return __user_config
 
 
-T_Model = TypeVar("T_Model", bound=BaseModel)
+def init_scaffold_config(config: ScaffoldConfig) -> ScaffoldConfig:
+    global __scaffold_config
+    __scaffold_config = config
+    return __scaffold_config
+
+
+def scaffold_config() -> ScaffoldConfig:
+    global __scaffold_config
+    if __scaffold_config is None:
+        raise ValueError("Global config not set")
+    return __scaffold_config
 
 
 class ErrorLocation(BaseModel):
@@ -78,8 +111,9 @@ class ValidationLocationError(ValueError):
 def json_to_obj(path: Path | str, Model: Type[T_Model]) -> T_Model:
     try:
         with open(path, "r", encoding="utf-8") as fo:
-            data = json.load(fo)
-            return Model(**data)
+            # data = json.load(fo)
+            # return Model(**data)
+            return Model.model_validate_json(fo.read())
     # todo JSONDecodeError: Expecting ',' delimiter: line 10 column 1 (char 87)
     except ValidationError as ex:
         with open(path, "r", encoding="utf-8") as fo:

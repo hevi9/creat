@@ -1,16 +1,25 @@
-import sys
 from pathlib import Path
 
 import typer
 from rich import print
 
 from . import app
-from .configs import ScaffoldConfig, json_to_obj, ValidationLocationError
-from .configs import get_global_config
+from .configs import (
+    ScaffoldConfig,
+    json_to_obj,
+    ValidationLocationError,
+    x_user_config,
+)
 
 
-@app.command("config-local")
-def _config_local(
+@app.command("config-user")
+def config_user():
+    """User configuration."""
+    print(x_user_config().model_dump_json(indent=2))
+
+
+@app.command("config-scaffold")
+def _config_scaffold(
     init: bool = typer.Option(
         False,
         help="Initialize local config in current directory.",
@@ -22,29 +31,30 @@ def _config_local(
     ),
 ) -> None:
     """Print current config of default if node defined."""
-    config = get_global_config()
-    path = scaffold_path.expanduser() / config.scaffold_config_name
+    path = scaffold_path.expanduser() / x_user_config().scaffold_config_name
     text = ScaffoldConfig().model_dump_json(indent=2)
     if init:
         if not path.exists():
             print(f"Creating local config file at {path.absolute()}")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.write_text(text)
-            return
+            raise typer.Exit(0)
         else:
             print(
                 f"[red]Config file {path.absolute()} already exists![/red]. "
-                "Remove file if you wan't to "
+                "Remove file if you want to "
                 "override it."
             )
             raise typer.Exit(1)
     if path.exists():
         try:
             obj = json_to_obj(path, ScaffoldConfig)
+            print(path)
             print(obj.model_dump_json(indent=2))
             return
         except ValidationLocationError as ex:
             for error in ex.locations:
                 print("ERROR:", error.location, error.msg, f"'{error.subject}'")
-            sys.exit(1)
+            raise typer.Exit(0)
+    print("Default no file")
     print(text)
