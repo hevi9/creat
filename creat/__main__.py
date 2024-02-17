@@ -1,11 +1,10 @@
-import json
 from pathlib import Path
 from typing import Annotated, Optional
 
 import typer
 
 from . import __version__, app
-from .configs import GlobalConfig, set_global_config
+from .configs import UserConfig, init_user_config, x_user_config, json_to_obj
 
 
 def _version(value: bool) -> None:
@@ -24,19 +23,20 @@ def main(
             is_eager=True,
         ),
     ] = None,
-    global_config_path: Path = typer.Option(
+    user_config_path: Path = typer.Option(
         Path("~/.config/creat/creat.json").expanduser(),
-        help="Path to global user config.",
+        help="Path to user config.",
     ),
 ) -> None:
     """."""
     try:
-        with open(global_config_path, "r", encoding="utf-8") as fo:
-            data = json.load(fo)
-            config_data = GlobalConfig(**data)
+        config_data = json_to_obj(user_config_path, UserConfig)
     except FileNotFoundError:
-        config_data = GlobalConfig()
-    set_global_config(config_data)
+        config_data = UserConfig()
+    config_data.user_config_path = user_config_path
+    x_user_config.init(config_data)
+
+    init_user_config(config_data)
 
 
 from . import sample  # noqa
