@@ -39,6 +39,13 @@ class UserConfig(BaseModel):
         ".creat.json",
         description="Name of project local creat config file",
     )
+    scaffolds_roots: list[Path] = Field(
+        [
+            Path("~/.creat").expanduser(),
+            Path("~/creat").expanduser(),
+        ],
+        description="",
+    )
 
 
 class ConfigAccess(Generic[T_Model]):
