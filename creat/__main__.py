@@ -41,6 +41,7 @@ def main(
 
 from . import cmd_sample  # noqa
 from . import cmd_config  # noqa
+from . import cmd_list  # noqa
 
 if __name__ == "__main__":
     app()
