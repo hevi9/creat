@@ -39,8 +39,8 @@ def main(
     init_user_config(config_data)
 
 
-from . import sample  # noqa
-from . import config  # noqa
+from . import cmd_sample  # noqa
+from . import cmd_config  # noqa
 
 if __name__ == "__main__":
     app()
