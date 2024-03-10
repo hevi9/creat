@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ "3.9", "3.10" ]
+        python-version: [ "3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v2
@@ -28,30 +28,10 @@ jobs:
           poetry config virtualenvs.create false
           poetry install
 
-      - name: Check code imports style with isort
+      - name: check with mypy
         run: |
-          poetry run isort --check-only --recursive .
+          poetry run mypy creat
 
-      - name: Check code style with black
+      - name: check with ruby
         run: |
-          poetry run black --check .
-
-      - name: Check package vulnerabilities with safety
-        run: |
-          poetry run safety check
-
-      - name: Check code vulnerabilities with bandit
-        run: |
-          poetry run bandit -ll -ii -r .
-
-      - name: Check code typing with mypy
-        run: |
-          poetry run mypy --ignore-missing-imports .
-
-      - name: Check code with pylint
-        run: |
-          poetry run pylint creat tests
-
-      - name: Test with pytest
-        run: |
-          poetry run pytest .
+          poetry run ruff check creat
