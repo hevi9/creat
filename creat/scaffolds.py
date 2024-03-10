@@ -18,7 +18,7 @@ class Scaffold:
         return self.root.name
 
 
-def index() -> dict[str, Scaffold]:
+def build_index() -> dict[str, Scaffold]:
     scaffolds = {}
     for roots in x_user_config().scaffolds_roots:
         if roots.is_dir():
