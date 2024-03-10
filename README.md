@@ -14,6 +14,12 @@ pipx install https://github.com/hevi9/creat.git
 pipx install git+https://git@github.com/hevi9/creat.git
 ```
 
+Install from workspace:
+
+```shell
+doit install
+```
+
 # Run
 
 See command, run and configuration options:
@@ -33,4 +39,4 @@ doit local
 # Non-transient dependencies
 
 * https://pypi.org/project/copier/
-  * https://copier.readthedocs.io/en/latest/
+    * https://copier.readthedocs.io/en/latest/
