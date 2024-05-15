@@ -13,9 +13,6 @@ Install **creat** to pipx managed virtual environment:
 pipx install git+https://git@github.com/hevi9/creat.git
 ```
 
-- pipx install https://github.com/hevi9/creat.git
-
-
 Install from workspace:
 
 ```shell
