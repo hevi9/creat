@@ -71,9 +71,13 @@ class IdSubs:
         raise NotImplementedError
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="function")
 def files(tmp_path: Path):
-    paths = tmp_path / "text_in.txt", tmp_path / "text_out.txt"
+    paths = (
+        tmp_path / "text_in.txt",
+        tmp_path / "text_out.txt",
+        tmp_path / "text_result.txt",
+    )
     paths[0].write_text(text_in)
     paths[1].write_text(text_out)
     yield paths
@@ -87,6 +91,5 @@ def test_idsubs():
 
 def test_idsubs_from_files(files):
     idsubs = IdSubs(substitutions=text_substitutions)
-
-    text_result = idsubs.sub(text_in)
-    assert text_result == text_out
+    idsubs.sub_file(file_in=files[0], file_out=files[2])
+    assert files[1].read_text() == files[2].read_text()
