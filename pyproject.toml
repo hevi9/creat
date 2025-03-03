@@ -16,6 +16,7 @@ typer = "^0.15"
 pydantic = "^2"
 watchfiles = "^1"
 json-source-map = "^1.0.5"
+charset-normalizer = "^3.4.1"
 
 
 [tool.poetry.group.dev.dependencies]
