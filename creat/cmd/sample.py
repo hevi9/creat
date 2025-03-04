@@ -1,22 +1,21 @@
 import datetime
+import subprocess
 from pathlib import Path
 from subprocess import run
 
 import typer
 from copier import Worker
 from rich import print
+from rich.panel import Panel
 from watchfiles import watch
 
-from . import app
-from .processes import cd
-from .scaffolds import build_index
+from ..processes import cd
+from ..scaffolds import build_index
 
-import subprocess
-
-from rich.panel import Panel
+cli = typer.Typer()
 
 
-@app.command("sample")
+@cli.command("sample")
 def cmd_sample(
     scaffold_name: str = typer.Argument(
         ...,
@@ -59,7 +58,7 @@ def cmd_sample(
                     except subprocess.CalledProcessError as ex:
                         print(Panel(f"{ex!s}", title="ERROR"))
 
-        dt = datetime.datetime.now()
+        dt = datetime.datetime.now().astimezone()
         print(f"{dt.strftime('%Y-%m-%d %H:%M:%S')} Sample target {sample_path} updated")
 
     update()

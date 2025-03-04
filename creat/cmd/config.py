@@ -3,22 +3,23 @@ from pathlib import Path
 import typer
 from rich import print
 
-from . import app
-from .configs import (
+from ..configs import (
     ScaffoldConfig,
     json_to_obj,
     ValidationLocationError,
     x_user_config,
 )
 
+cli = typer.Typer(name="config", no_args_is_help=True)
 
-@app.command("config-user")
+
+@cli.command("user")
 def config_user():
     """User configuration."""
     print(x_user_config().model_dump_json(indent=2))
 
 
-@app.command("config-scaffold")
+@cli.command("scaffold")
 def _config_scaffold(
     init: bool = typer.Option(
         False,

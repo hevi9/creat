@@ -3,8 +3,19 @@ from typing import Annotated, Optional
 
 import typer
 
-from . import __version__, app
+from . import __version__
+from .cmd import config, ls, new, sample
 from .configs import UserConfig, init_user_config, x_user_config, json_to_obj
+
+cli = typer.Typer(
+    no_args_is_help=True,
+    pretty_exceptions_enable=False,
+)
+
+cli.add_typer(config.cli, name="config")
+cli.add_typer(ls.cli)
+cli.add_typer(new.cli)
+cli.add_typer(sample.cli)
 
 
 def _version(value: bool) -> None:
@@ -13,7 +24,7 @@ def _version(value: bool) -> None:
         raise typer.Exit(0)
 
 
-@app.callback()
+@cli.callback()
 def main(
     _version: Annotated[
         Optional[bool],
@@ -39,10 +50,5 @@ def main(
     init_user_config(config_data)
 
 
-from . import cmd_sample  # noqa
-from . import cmd_config  # noqa
-from . import cmd_list  # noqa
-from . import cmd_new  # noqa
-
 if __name__ == "__main__":
-    app()
+    cli()

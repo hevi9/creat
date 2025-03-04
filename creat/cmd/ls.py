@@ -1,11 +1,13 @@
+import typer
 from rich import print
 
-from . import app
-from .scaffolds import build_index
+from ..scaffolds import build_index
+
+cli = typer.Typer()
 
 
-@app.command("list")
-def cmd_list():
+@cli.command("ls")
+def ls():
     """List scaffolds."""
     scaffolds = build_index()
     for scaffold in scaffolds.values():
