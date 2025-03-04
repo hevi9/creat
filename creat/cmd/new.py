@@ -1,25 +1,23 @@
 from pathlib import Path
 
+import typer
 from copier import Worker
-
-from . import app
-
-from typer import Argument, Option
-
-from .scaffolds import build_index
-
 from rich import print
 
+from ..scaffolds import build_index
 
-@app.command("new")
+cli = typer.Typer()
+
+
+@cli.command("new")
 def cmd_new(
-    source: str = Argument(
+    source: str = typer.Argument(
         help="Scaffold source name.",
     ),
-    target: Path = Argument(
+    target: Path = typer.Argument(
         help="Target path.",
     ),
-    dry_run: bool = Option(
+    dry_run: bool = typer.Option(
         False,
         help="Produce no real rendering.",
     ),
