@@ -23,7 +23,7 @@ push:: pull check ## Push the git repository
 clean:: ## Clean the repository
 	rm -rf .venv .doit.db dist
 
-deploy-user:: ## Deploy the user
+deploy-user:: check ## Deploy the user
 	$(POETRY) build --no-interaction --format=wheel --output=$(DISTDIR)
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
