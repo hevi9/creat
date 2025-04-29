@@ -18,9 +18,7 @@ watchfiles = "^1"
 json-source-map = "^1.0.5"
 charset-normalizer = "^3.4.1"
 
-
 [tool.poetry.group.dev.dependencies]
-doit = "^0.36"
 mypy = "<2"
 ruff = "<1"
 black = { extras = ["d"], version = "<26" }
