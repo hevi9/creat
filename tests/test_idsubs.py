@@ -42,7 +42,7 @@ class IdSubs:
             id_re=id_re,
         )
 
-    def on_match(self, match: re.Match) -> str:
+    def on_match(self, match: re.Match[str]) -> str:
         source = match.group(1)
         try:
             target = self.substitutions[source]

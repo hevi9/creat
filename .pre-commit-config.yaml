@@ -15,17 +15,8 @@ repos:
   - id: check-toml
   - id: detect-private-key
 
-#- repo: local
-#  hooks:
-#  - id: mypy
-#    entry: poetry run mypy
-#    language: system
-#    types: [ python ]
-#    require_serial: true
-#    name: check python files with mypy
-
 - repo: https://github.com/astral-sh/ruff-pre-commit
-  rev: v0.9.8
+  rev: v0.11.7
   hooks:
   - id: ruff
     args: [ --fix ]
