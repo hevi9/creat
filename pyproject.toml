@@ -38,7 +38,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-creat = 'creat.__main__:app'
+creat = 'creat.__main__:cli'
 
 [tool.mypy]
 plugins = [
