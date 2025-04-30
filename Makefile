@@ -1,4 +1,5 @@
-POETRY := poetry@1
+EXE.POETRY2 := $(shell which poetry2 poetry@2)
+POETRY := $(EXE.POETRY2)
 PIPX := pipx
 VERSION := $(shell $(POETRY) version --short)
 PRE_COMMIT := pre-commit
@@ -37,6 +38,10 @@ update:: ## Update the local environment
 	$(PRE_COMMIT) install --install-hooks
 
 check:: ## Check the code
+	$(POETRY) check
 	$(POETRY) run ruff check creat tests
 	$(POETRY) run mypy creat tests
 	$(POETRY) run pytest -v --disable-warnings --maxfail=1
+
+lock:: ## Lock the dependencies
+	$(POETRY) lock
