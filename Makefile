@@ -6,7 +6,7 @@ PRE_COMMIT := pre-commit
 NAME := $(shell basename $(shell pwd))
 WHEEL := $(NAME)-$(VERSION)-py3-none-any.whl
 DISTDIR := dist
-GIT := git -v
+GIT := git
 
 help::
 	@echo 'Targets:'
