@@ -29,7 +29,7 @@ deploy-user:: check ## Deploy the user
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
 local:: ## Install the local environment
-	$(POETRY) install --no-interaction --sync --remove-untracked
+	$(POETRY) sync --no-interaction
 	$(PRE_COMMIT) install --install-hooks
 
 update:: ## Update the local environment
