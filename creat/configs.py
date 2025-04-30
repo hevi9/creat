@@ -118,8 +118,6 @@ class ValidationLocationError(ValueError):
 def json_to_obj(path: Path | str, Model: Type[T_Model]) -> T_Model:
     try:
         with open(path, "r", encoding="utf-8") as fo:
-            # data = json.load(fo)
-            # return Model(**data)
             return Model.model_validate_json(fo.read())
     # todo JSONDecodeError: Expecting ',' delimiter: line 10 column 1 (char 87)
     except ValidationError as ex:
