@@ -27,3 +27,9 @@ repos:
   rev: 25.1.0
   hooks:
   - id: black
+
+- repo: https://github.com/commitizen-tools/commitizen
+  rev: v4.6.0
+  hooks:
+  - id: commitizen
+    stages: [ commit-msg ]
