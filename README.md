@@ -4,19 +4,13 @@
 
 Requirements
 
-* Python 3.10+
+* Python 3.12+
 * pipx
 
 Install **creat** to pipx managed virtual environment:
 
 ```shell
 pipx install git+https://git@github.com/hevi9/creat.git
-```
-
-Install from workspace:
-
-```shell
-doit install
 ```
 
 # Run
@@ -32,7 +26,7 @@ creat --help
 Setup local environment:
 
 ```shell
-doit local
+make local
 ```
 
 # Non-transient dependencies
