@@ -1,4 +1,4 @@
-EXE.POETRY2 := $(shell which poetry2 poetry@2)
+EXE.POETRY2 := $(shell which poetry2 poetry@2 poetry)
 POETRY := $(EXE.POETRY2)
 PIPX := pipx
 VERSION := $(shell $(POETRY) version --short)
