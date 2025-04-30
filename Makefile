@@ -12,6 +12,9 @@ help::
 	@echo 'Targets:'
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
+requires::
+	which $(EXE.POETRY2)
+
 pull:: ## Pull the git repository
 	$(GIT) pull
 	$(GIT) pull --recurse-submodules
@@ -34,7 +37,7 @@ deploy-user:: check ## Deploy the user
 	$(POETRY) build --no-interaction --format=wheel --output=$(DISTDIR)
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
-local:: ## Install the local environment
+local:: requires ## Install the local environment
 	$(POETRY) sync --no-interaction
 	$(PRE_COMMIT) install --install-hooks
 	$(PRE_COMMIT) install --hook-type commit-msg
