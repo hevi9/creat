@@ -31,6 +31,7 @@ deploy-user:: check ## Deploy the user
 local:: ## Install the local environment
 	$(POETRY) sync --no-interaction
 	$(PRE_COMMIT) install --install-hooks
+	$(PRE_COMMIT) install --hook-type commit-msg
 
 update:: ## Update the local environment
 	$(POETRY) update --no-interaction
