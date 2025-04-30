@@ -16,7 +16,12 @@ pull:: ## Pull the git repository
 	git pull --recurse-submodules
 	git pull --tags
 
-push:: pull check ## Push the git repository
+check-clean-workspace:: ## Check the workspace
+	git diff --exit-code
+	git diff --cached --exit-code
+	git diff --submodule=log --exit-code
+
+push:: check-clean-workspace check ## Push the git repository
 	git push
 	git push --recurse-submodules check
 	git push --tags
