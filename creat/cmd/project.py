@@ -6,12 +6,14 @@ from rich import print
 
 from ..scaffolds import build_index
 
-cli = typer.Typer()
+cli = typer.Typer(
+    pretty_exceptions_enable=False,
+)
 
 
-@cli.command("new")
-def cmd_new(
-    source: str = typer.Argument(
+@cli.command(no_args_is_help=True)
+def project(
+    scaffold: str = typer.Argument(
         help="Scaffold source name.",
     ),
     target: Path = typer.Argument(
@@ -24,7 +26,7 @@ def cmd_new(
 ) -> None:
     """Instantiate files from scaffold."""
     index = build_index()
-    scaffold = index[source]
+    scaffold = index[scaffold]
     print(f"Creating new [yellow]{scaffold.root!s}[/yellow] to [green]{target}[/green]")
     worker = Worker(
         src_path=str(scaffold.root),

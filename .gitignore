@@ -7,3 +7,4 @@ __pycache__
 .doit.*
 .venv
 poetry.lock
+tmp/

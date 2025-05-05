@@ -6,8 +6,8 @@ from ..scaffolds import build_index
 cli = typer.Typer()
 
 
-@cli.command("ls")
-def ls():
+@cli.command("list")
+def list_():
     """List scaffolds."""
     scaffolds = build_index()
     for scaffold in scaffolds.values():

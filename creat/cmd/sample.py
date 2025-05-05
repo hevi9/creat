@@ -12,11 +12,11 @@ from watchfiles import watch
 from ..processes import cd
 from ..scaffolds import build_index
 
-cli = typer.Typer()
+cli = typer.Typer(pretty_exceptions_enable=False)
 
 
-@cli.command("sample")
-def cmd_sample(
+@cli.command(no_args_is_help=True)
+def sample(
     scaffold_name: str = typer.Argument(
         ...,
         help="Scaffold name to sample.",

@@ -10,17 +10,17 @@ from ..configs import (
     x_user_config,
 )
 
-cli = typer.Typer(name="config", no_args_is_help=True)
+cli = typer.Typer(name="config", no_args_is_help=True, help="Configuration info.")
 
 
-@cli.command("user")
-def config_user():
+@cli.command()
+def user():
     """User configuration."""
     print(x_user_config().model_dump_json(indent=2))
 
 
-@cli.command("scaffold")
-def _config_scaffold(
+@cli.command()
+def scaffold(
     init: bool = typer.Option(
         False,
         help="Initialize local config in current directory.",

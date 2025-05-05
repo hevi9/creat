@@ -17,7 +17,20 @@ IDx
 
 """.strip()
 
+text_in_x = """
+
+class XTEST01X:
+XTEST02X
+XTEST03X
+XxX
+
+""".strip()
+
 text_out = """
+class REPLACED01:\nREPLACED02\nREPLACED03\nREPLACEDx
+""".strip()
+
+text_out_x = """
 class REPLACED01:\nREPLACED02\nREPLACED03\nREPLACEDx
 """.strip()
 
@@ -33,9 +46,13 @@ class IdSubs:
     def __init__(
         self,
         substitutions: Mapping[str, str],
-        id_re: str = r"ID([_a-zA-Z][_a-zA-Z0-9]*)",
+        id_re: str = r"{start_token}([_a-zA-Z][_a-zA-Z0-9]*){end_token}",
+        start_token="ID",
+        end_token="",
     ):
-        self.id_pattern = re.compile(id_re)
+        self.id_pattern = re.compile(
+            id_re.format(start_token=start_token, end_token=end_token)
+        )
         self.substitutions = substitutions
         self.log = logger.bind(
             substitutions=substitutions,
@@ -64,10 +81,13 @@ class IdSubs:
         text_sub = self.sub(text)
         file_out.write_text(text_sub)
 
-    def sub_path(self, path: Path) -> None:
-        raise NotImplementedError
+    def sub_path(self, path: Path) -> Path:
+        result = []
+        for part in path.parts:
+            result.append(self.sub(part))
+        return Path(*result)
 
-    def sub_tree(self, path: Path) -> None:
+    def sub_tree(self, path: Path) -> Path:
         raise NotImplementedError
 
 
@@ -89,7 +109,24 @@ def test_idsubs():
     assert text_result == text_out
 
 
+def test_idsubs_xx():
+    idsubs = IdSubs(substitutions=text_substitutions, start_token="X", end_token="X")
+    text_result = idsubs.sub(text_in_x)
+    assert text_result == text_out_x
+
+
 def test_idsubs_from_files(files):
     idsubs = IdSubs(substitutions=text_substitutions)
     idsubs.sub_file(file_in=files[0], file_out=files[2])
     assert files[1].read_text() == files[2].read_text()
+
+
+def test_idsubs_path():
+    idsubs = IdSubs(substitutions=text_substitutions)
+    path = Path("IDTEST01/IDTEST02/IDTEST03")
+    path_result = idsubs.sub_path(path)
+    assert path_result == Path("REPLACED01/REPLACED02/REPLACED03")
+
+
+# todo paths
+# todo tree

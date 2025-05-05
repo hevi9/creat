@@ -4,7 +4,7 @@ from typing import Annotated, Optional
 import typer
 
 from . import __version__
-from .cmd import config, ls, new, sample
+from .cmd import config, ls, project, sample
 from .configs import UserConfig, init_user_config, x_user_config, json_to_obj
 
 cli = typer.Typer(
@@ -12,9 +12,9 @@ cli = typer.Typer(
     pretty_exceptions_enable=False,
 )
 
-cli.add_typer(config.cli, name="config")
+cli.add_typer(config.cli)
 cli.add_typer(ls.cli)
-cli.add_typer(new.cli)
+cli.add_typer(project.cli)
 cli.add_typer(sample.cli)
 
 
