@@ -36,6 +36,8 @@ Set up the local environment:
 make local
 ```
 
+If you already activated `.venv`, `make local` will sync that active environment so the `creat` console script is available on your shell `PATH`.
+
 Run the CLI:
 
 ```shell

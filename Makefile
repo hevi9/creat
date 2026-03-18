@@ -6,6 +6,7 @@ NAME := $(shell basename $(shell pwd))
 WHEEL := $(NAME)-$(VERSION)-py3-none-any.whl
 DISTDIR := dist
 GIT := git
+UV_ACTIVE_FLAG := $(if $(VIRTUAL_ENV),--active,)
 
 help::
 	@echo 'Targets:'
@@ -37,12 +38,14 @@ deploy-user:: check ## Deploy the user
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
 local:: requires ## Install the local environment
-	$(UV) sync --group dev
+	# Keep console scripts visible when the caller already activated a venv.
+	$(UV) sync $(UV_ACTIVE_FLAG) --group dev
 	$(PRE_COMMIT) install --install-hooks
 	$(PRE_COMMIT) install --hook-type commit-msg
 
 update:: ## Update the local environment
-	$(UV) sync --group dev --upgrade
+	# Keep console scripts visible when the caller already activated a venv.
+	$(UV) sync $(UV_ACTIVE_FLAG) --group dev --upgrade
 	$(PRE_COMMIT) autoupdate
 	$(PRE_COMMIT) install --install-hooks
 

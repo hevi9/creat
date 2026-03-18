@@ -17,6 +17,7 @@ These instructions apply to the entire repository.
 - `typer` for the CLI
 - `pydantic` for config models and validation
 - `loguru` for logging
+    - reference: https://loguru.readthedocs.io/en/stable/
 
 # Working Rules
 
