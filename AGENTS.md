@@ -17,6 +17,8 @@ These instructions apply to the entire repository.
 - `uv` for environment and task execution
 - `typer` for the CLI
 - `pydantic` for config models and validation
+- `tomlkit` for TOML config parsing and writing
+    - reference: https://tomlkit.readthedocs.io/en/stable/
 - `loguru` for logging
     - reference: https://loguru.readthedocs.io/en/stable/
 
@@ -26,12 +28,8 @@ These instructions apply to the entire repository.
 - Do not reintroduce scaffold-specific code or dependencies unless explicitly requested.
 - Update tests and documentation when changing behavior.
 - On not clear choices ask user for reference.
-
-# Useful Commands
-
-- `make local`
-- `make check`
-- `uv run creat --help`
+- When adding new package dependencies, stop, ask user guidance.
+- `make check` after change tasks
 
 # Support developer review
 

@@ -24,8 +24,8 @@ Available now:
 
 Configuration resolution order:
 
-- `creat --config path/to/creat.json ...` or `creat --config path/to/creat.toml ...`
-- the user config at `~/.config/creat/creat.json` when it exists
+- `creat --config path/to/creat.toml ...`
+- the user config at `~/.config/creat/creat.toml` when it exists
 - model defaults, with the selected path kept as the active write target
 
 Commands and library code can read the active config through `creat.configs.get_config()` after startup initialization.

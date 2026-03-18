@@ -39,8 +39,8 @@ def main(
             "--config",
             "--config-path",
             help=(
-                "Path to config file. Supports JSON and TOML. If omitted, "
-                "the user config is loaded when present and defaults are used otherwise."
+                "Path to the TOML config file. If omitted, the user config is "
+                "loaded when present and defaults are used otherwise."
             ),
         ),
     ] = None,

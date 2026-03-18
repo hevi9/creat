@@ -1,16 +1,16 @@
-import json
-import tomllib
+from dataclasses import dataclass
 from contextvars import ContextVar
 from pathlib import Path
-from typing import Any, Generic, Type, TypeVar
+from typing import Generic, Type, TypeVar
 
-import tomli_w
-from json_source_map import calculate  # type: ignore
+import tomlkit
 from pydantic import BaseModel, Field
 from pydantic_core import ValidationError
+from tomlkit.items import Key
+from tomlkit.parser import Parser
 
 T_Model = TypeVar("T_Model", bound=BaseModel)
-DEFAULT_CONFIG_PATH = Path("~/.config/creat/creat.json").expanduser()
+DEFAULT_CONFIG_PATH = Path("~/.config/creat/creat.toml").expanduser()
 
 
 class Config(BaseModel):
@@ -67,31 +67,83 @@ class ValidationLocationError(ValueError):
         self.locations = locations
 
 
+@dataclass(frozen=True)
+class SourceLocation:
+    line: int
+    column: int
+
+
+class TrackingParser(Parser):
+    def __init__(self, string: str) -> None:
+        super().__init__(string)
+        self.path_locations: dict[tuple[str, ...], SourceLocation] = {}
+        self._current_table_path: tuple[str, ...] = ()
+
+    def _record_location(self, path: tuple[str, ...], location: SourceLocation) -> None:
+        self.path_locations.setdefault(path, location)
+
+    def _path_from_key(self, key: Key) -> tuple[str, ...]:
+        return tuple(part.key for part in key)
+
+    def _key_location(self) -> SourceLocation:
+        with self._state(restore=True):
+            while self._current.is_spaces():
+                self.inc()
+            line, column = self._src._to_linecol()
+
+        return SourceLocation(line=line, column=column + 1)
+
+    def _table_location(self) -> SourceLocation:
+        with self._state(restore=True):
+            self.inc()
+            if self._current == "[":
+                self.inc()
+            while self._current.is_spaces():
+                self.inc()
+            line, column = self._src._to_linecol()
+
+        return SourceLocation(line=line, column=column + 1)
+
+    def _parse_key_value(self, parse_comment: bool = False):
+        location = self._key_location()
+        key, item = super()._parse_key_value(parse_comment=parse_comment)
+        full_path = self._current_table_path + self._path_from_key(key)
+        self._record_location(full_path, location)
+        return key, item
+
+    def _parse_table(self, parent_name=None, parent=None):
+        _, key = self._peek_table()
+        location = self._table_location()
+        full_path = self._path_from_key(key)
+        previous_path = self._current_table_path
+        self._record_location(full_path, location)
+        self._current_table_path = full_path
+        try:
+            return super()._parse_table(parent_name=parent_name, parent=parent)
+        finally:
+            self._current_table_path = previous_path
+
+
 def _normalize_config_path(path: Path | str) -> Path:
     return Path(path).expanduser()
-
-
-def _uses_toml(path: Path) -> bool:
-    return path.suffix.lower() == ".toml"
 
 
 def _build_validation_locations(
     path: Path,
     error: ValidationError,
-    source_map: dict[str, Any] | None = None,
+    source_map: dict[tuple[str, ...], SourceLocation] | None = None,
 ) -> list[ErrorLocation]:
     locations = []
     for item in error.errors():
-        location_path = list(item["loc"])
+        location_path = tuple(str(part) for part in item["loc"])
         error_context_path = None
         if source_map is not None:
             while location_path:
                 try:
-                    pointer = "/" + "/".join([str(part) for part in location_path])
-                    error_context_path = source_map[pointer]
+                    error_context_path = source_map[location_path]
                     break
                 except KeyError:
-                    location_path.pop()
+                    location_path = location_path[:-1]
                     continue
 
         error_location = ErrorLocation(
@@ -99,8 +151,8 @@ def _build_validation_locations(
             msg=item["msg"],
         )
         if error_context_path is not None:
-            line = error_context_path.value_end.line
-            column = error_context_path.value_end.column
+            line = error_context_path.line
+            column = error_context_path.column
             error_location.location = f"{path!s}:{line}:{column}"
             error_location.line = line
             error_location.column = column
@@ -108,38 +160,20 @@ def _build_validation_locations(
     return locations
 
 
-def json_to_obj(path: Path | str, Model: Type[T_Model]) -> T_Model:
-    config_path = _normalize_config_path(path)
-    text = config_path.read_text(encoding="utf-8")
-    try:
-        return Model.model_validate_json(text)
-    # todo JSONDecodeError: Expecting ',' delimiter: line 10 column 1 (char 87)
-    except ValidationError as ex:
-        source_map = calculate(text)
-        locations = _build_validation_locations(config_path, ex, source_map)
-        raise ValidationLocationError(
-            f"Validation errors on {config_path!s}", error=ex, locations=locations
-        )
-
-
 def toml_to_obj(path: Path | str, Model: Type[T_Model]) -> T_Model:
     config_path = _normalize_config_path(path)
     text = config_path.read_text(encoding="utf-8")
-    data = tomllib.loads(text)
+    # Reason: tomlkit keeps TOML parsing centralized, and the tracking parser
+    # preserves source locations for later validation errors.
+    parser = TrackingParser(text)
+    data = parser.parse().unwrap()
     try:
         return Model.model_validate(data)
     except ValidationError as ex:
-        locations = _build_validation_locations(config_path, ex)
+        locations = _build_validation_locations(config_path, ex, parser.path_locations)
         raise ValidationLocationError(
             f"Validation errors on {config_path!s}", error=ex, locations=locations
         )
-
-
-def file_to_obj(path: Path | str, Model: Type[T_Model]) -> T_Model:
-    config_path = _normalize_config_path(path)
-    if _uses_toml(config_path):
-        return toml_to_obj(config_path, Model)
-    return json_to_obj(config_path, Model)
 
 
 def default_config(config_path: Path = DEFAULT_CONFIG_PATH) -> Config:
@@ -152,7 +186,7 @@ def load_config(config_path: Path | str | None = None) -> Config:
         selected_path = _normalize_config_path(config_path)
 
     try:
-        config = file_to_obj(selected_path, Config)
+        config = toml_to_obj(selected_path, Config)
     except FileNotFoundError:
         config = default_config(selected_path)
 
@@ -172,9 +206,7 @@ def get_config() -> Config:
 
 def format_config(config: Config) -> str:
     payload = config.model_dump(mode="json")
-    if _uses_toml(config.config_path):
-        return tomli_w.dumps(payload).rstrip("\n") + "\n"
-    return json.dumps(payload, indent=2) + "\n"
+    return tomlkit.dumps(payload).rstrip("\n") + "\n"
 
 
 def write_config(config: Config) -> Path:
