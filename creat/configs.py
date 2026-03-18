@@ -8,10 +8,10 @@ from pydantic_core import ValidationError
 T_Model = TypeVar("T_Model", bound=BaseModel)
 
 
-class UserConfig(BaseModel):
-    user_config_path: Path = Field(
+class Config(BaseModel):
+    config_path: Path = Field(
         Path("~/.config/creat/creat.json").expanduser(),
-        description="User config file path.",
+        description="Config file path.",
     )
     project_system: str = Field(
         "ai-agents",
@@ -32,7 +32,7 @@ class ConfigAccess(Generic[T_Model]):
         return self._config
 
 
-x_user_config: ConfigAccess[UserConfig] = ConfigAccess[UserConfig]()
+x_config: ConfigAccess[Config] = ConfigAccess[Config]()
 
 
 class ErrorLocation(BaseModel):

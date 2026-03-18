@@ -19,7 +19,7 @@ The next implementation target is an AI-agent-supported project creation system.
 
 Available now:
 
-- `creat config user`
+- `creat config show`
 - `creat config init`
 
 Removed:

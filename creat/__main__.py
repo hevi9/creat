@@ -5,7 +5,7 @@ import typer
 
 from . import __version__
 from .cmd import config
-from .configs import UserConfig, x_user_config, json_to_obj
+from .configs import Config, x_config, json_to_obj
 
 cli = typer.Typer(
     no_args_is_help=True,
@@ -32,18 +32,19 @@ def main(
             is_eager=True,
         ),
     ] = None,
-    user_config_path: Path = typer.Option(
+    config_path: Path = typer.Option(
         Path("~/.config/creat/creat.json").expanduser(),
-        help="Path to user config.",
+        help="Path to config.",
     ),
 ) -> None:
-    """Load the active user configuration."""
+    """Load the active configuration."""
     try:
-        config_data = json_to_obj(user_config_path, UserConfig)
+        config_data = json_to_obj(config_path, Config)
     except FileNotFoundError:
-        config_data = UserConfig()
-    config_data.user_config_path = user_config_path
-    x_user_config.init(config_data)
+        config_data = Config()
+    # Keep the selected path authoritative for the active session.
+    config_data.config_path = config_path
+    x_config.init(config_data)
 
 
 if __name__ == "__main__":
