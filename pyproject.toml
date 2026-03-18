@@ -1,51 +1,43 @@
 [project]
 name = "creat"
 version = "0.0.0"
-description = "experimental .."
+description = "CLI and configuration foundation for AI-agent project creation."
 readme = "README.md"
-license = "LGPL"
-authors = [
-    { name = "Your Name", email = "you@example.com" }
-]
+license = { text = "LGPL-3.0-or-later" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.11,<4"
 dependencies = [
-    "copier (>=9,<10)",
-    "jinja2 (>=3,<4)",
-    "loguru (>=0.7,<1)",
-    "rich  (>=13,<14)",
     "typer (>=0.15,<1)",
     "pydantic (>=2,<3)",
-    "watchfiles (>=1,<2)",
     "json-source-map (>=1.0.5,<2)",
-    "charset-normalizer (>=3.4.1,<4)",
 ]
 
 [project.scripts]
 creat = 'creat.__main__:cli'
 
 
-[tool.poetry.group.dev.dependencies]
-mypy = "<2"
-ruff = ">=0.11,<1"
-black = { extras = ["d"], version = "<26" }
-pip-audit = "*"
-pytest = "*"
-pytest-benchmark = "*"
-pytest-cov = "*"
-pytest-mock = "*"
-pytest-timeout = "*"
-typing-extensions = "*"
-pre-commit = "^4"
+[dependency-groups]
+dev = [
+    "mypy<2",
+    "ruff>=0.11,<1",
+    "black[d]<26",
+    "pip-audit",
+    "pytest",
+    "pytest-benchmark",
+    "pytest-cov",
+    "pytest-mock",
+    "pytest-timeout",
+    "typing-extensions",
+    "pre-commit>=4,<5",
+]
 
 [build-system]
-requires = ["poetry-core>=2.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
 
 
 [tool.mypy]
-plugins = [
-    "pydantic.mypy"
-]
+plugins = ["pydantic.mypy"]
 
 follow_imports = "silent"
 warn_redundant_casts = true

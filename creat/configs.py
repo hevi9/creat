@@ -1,50 +1,21 @@
 from pathlib import Path
-from typing import Type, TypeVar, Generic
+from typing import Generic, Type, TypeVar
 
 from json_source_map import calculate  # type: ignore
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, Field
 from pydantic_core import ValidationError
 
 T_Model = TypeVar("T_Model", bound=BaseModel)
 
 
-class ShellRun(BaseModel):
-    """Single run in system default shell shell."""
-
-    text: str = Field(..., description="Text to execute in system default shell.")
-
-
-class SampleConfig(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    runs: list[ShellRun] = Field(
-        default_factory=list,
-        description="""List of runs to execute after scaffold instantiation is made.""",
-        min_items=1,  # type: ignore
-    )
-
-
-class ScaffoldConfig(BaseModel):
-    """Project local config."""
-
-    sample: SampleConfig = Field(default_factory=SampleConfig)
-
-
 class UserConfig(BaseModel):
     user_config_path: Path = Field(
-        Path("~/.config/creat").expanduser(),
+        Path("~/.config/creat/creat.json").expanduser(),
         description="User config file path.",
     )
-    scaffold_config_name: str = Field(
-        ".creat.json",
-        description="Name of project local creat config file",
-    )
-    scaffolds_roots: list[Path] = Field(
-        [
-            Path("~/.creat").expanduser(),
-            Path("~/creat").expanduser(),
-        ],
-        description="",
+    project_system: str = Field(
+        "ai-agents",
+        description="Active project creation system.",
     )
 
 
@@ -62,37 +33,6 @@ class ConfigAccess(Generic[T_Model]):
 
 
 x_user_config: ConfigAccess[UserConfig] = ConfigAccess[UserConfig]()
-
-x_scaffold_config: ConfigAccess[ScaffoldConfig] = ConfigAccess[ScaffoldConfig]()
-
-__user_config: UserConfig | None = None
-__scaffold_config: ScaffoldConfig | None = None
-
-
-def init_user_config(config: UserConfig) -> UserConfig:
-    global __user_config
-    __user_config = config
-    return __user_config
-
-
-def user_config() -> UserConfig:
-    global __user_config
-    if __user_config is None:
-        raise ValueError("Global config not set")
-    return __user_config
-
-
-def init_scaffold_config(config: ScaffoldConfig) -> ScaffoldConfig:
-    global __scaffold_config
-    __scaffold_config = config
-    return __scaffold_config
-
-
-def scaffold_config() -> ScaffoldConfig:
-    global __scaffold_config
-    if __scaffold_config is None:
-        raise ValueError("Global config not set")
-    return __scaffold_config
 
 
 class ErrorLocation(BaseModel):

@@ -1,35 +1,49 @@
-# creat -- experimental ..
+# creat
 
-# Install
+The previous scaffold-based project creation system has been removed.
 
-Requirements
+The repository now keeps only:
 
-* Python 3.12+
-* pipx
+- the core CLI shell
+- the JSON config loading and validation layer
+- the command-module skeleton under `creat/cmd/`
 
-Install **creat** to pipx managed virtual environment:
+The next implementation target is an AI-agent-supported project creation system.
 
-```shell
-pipx install git+https://git@github.com/hevi9/creat.git
-```
+## Requirements
 
-# Run
+- Python 3.11+
+- uv
 
-See command, run and configuration options:
+## Current CLI Surface
 
-```shell
-creat --help
-```
+Available now:
 
-# Develop
+- `creat config user`
+- `creat config init`
 
-Setup local environment:
+Removed:
+
+- scaffold discovery
+- project scaffolding commands
+- sample regeneration workflow
+
+## Development
+
+Set up the local environment:
 
 ```shell
 make local
 ```
 
-# Non-transient dependencies
+Run the CLI:
 
-* https://pypi.org/project/copier/
-    * https://copier.readthedocs.io/en/latest/
+```shell
+uv run creat --help
+```
+
+Run checks:
+
+```shell
+make check
+```

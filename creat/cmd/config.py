@@ -1,61 +1,34 @@
-from pathlib import Path
-
 import typer
-from rich import print
 
-from ..configs import (
-    ScaffoldConfig,
-    json_to_obj,
-    ValidationLocationError,
-    x_user_config,
-)
+from ..configs import UserConfig, x_user_config
 
-cli = typer.Typer(name="config", no_args_is_help=True, help="Configuration info.")
+cli = typer.Typer(name="config", no_args_is_help=True, help="Configuration commands.")
 
 
 @cli.command()
-def user():
-    """User configuration."""
-    print(x_user_config().model_dump_json(indent=2))
+def user() -> None:
+    """Print the active user configuration."""
+    typer.echo(x_user_config().model_dump_json(indent=2))
 
 
 @cli.command()
-def scaffold(
-    init: bool = typer.Option(
+def init(
+    force: bool = typer.Option(
         False,
-        help="Initialize local config in current directory.",
-    ),
-    scaffold_path: Path = typer.Argument(
-        Path("."),
-        help="Path to scaffold root to sample.",
-        metavar="PATH",
+        help="Overwrite an existing user config file.",
     ),
 ) -> None:
-    """Print current config of default if node defined."""
-    path = scaffold_path.expanduser() / x_user_config().scaffold_config_name
-    text = ScaffoldConfig().model_dump_json(indent=2)
-    if init:
-        if not path.exists():
-            print(f"Creating local config file at {path.absolute()}")
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text)
-            raise typer.Exit(0)
-        else:
-            print(
-                f"[red]Config file {path.absolute()} already exists![/red]. "
-                "Remove file if you want to "
-                "override it."
-            )
-            raise typer.Exit(1)
-    if path.exists():
-        try:
-            obj = json_to_obj(path, ScaffoldConfig)
-            print(path)
-            print(obj.model_dump_json(indent=2))
-            return
-        except ValidationLocationError as ex:
-            for error in ex.locations:
-                print("ERROR:", error.location, error.msg, f"'{error.subject}'")
-            raise typer.Exit(0)
-    print("Default no file")
-    print(text)
+    """Write the active user configuration to disk."""
+    config_data = x_user_config()
+    path = config_data.user_config_path
+    if path.exists() and not force:
+        typer.echo(f"Config file {path} already exists. Use --force to overwrite.")
+        raise typer.Exit(1)
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    config_text = UserConfig(
+        user_config_path=path,
+        project_system=config_data.project_system,
+    ).model_dump_json(indent=2)
+    path.write_text(config_text + "\n", encoding="utf-8")
+    typer.echo(f"Wrote {path}")

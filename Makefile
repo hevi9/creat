@@ -1,7 +1,6 @@
-EXE.POETRY2 := $(shell which poetry2 poetry@2 poetry)
-POETRY := $(EXE.POETRY2)
+UV := uv
 PIPX := pipx
-VERSION := $(shell $(POETRY) version --short)
+VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -n 1)
 PRE_COMMIT := pre-commit
 NAME := $(shell basename $(shell pwd))
 WHEEL := $(NAME)-$(VERSION)-py3-none-any.whl
@@ -13,7 +12,7 @@ help::
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
 requires::
-	which $(EXE.POETRY2)
+	which $(UV)
 
 pull:: ## Pull the git repository
 	$(GIT) pull
@@ -34,24 +33,23 @@ clean:: ## Clean the repository
 	rm -rf .venv .doit.db dist
 
 deploy-user:: check ## Deploy the user
-	$(POETRY) build --no-interaction --format=wheel --output=$(DISTDIR)
+	$(UV) build --wheel --out-dir=$(DISTDIR)
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
 local:: requires ## Install the local environment
-	$(POETRY) sync --no-interaction
+	$(UV) sync --group dev
 	$(PRE_COMMIT) install --install-hooks
 	$(PRE_COMMIT) install --hook-type commit-msg
 
 update:: ## Update the local environment
-	$(POETRY) update --no-interaction
+	$(UV) sync --group dev --upgrade
 	$(PRE_COMMIT) autoupdate
 	$(PRE_COMMIT) install --install-hooks
 
 check:: ## Check the code
-	$(POETRY) check
-	$(POETRY) run ruff check creat tests
-	$(POETRY) run mypy creat tests
-	$(POETRY) run pytest -v --disable-warnings --maxfail=1
+	$(UV) run ruff check creat tests
+	$(UV) run mypy creat tests
+	$(UV) run pytest -v --disable-warnings --maxfail=1
 
 lock:: ## Lock the dependencies
-	$(POETRY) lock
+	$(UV) lock
