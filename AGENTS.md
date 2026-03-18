@@ -9,6 +9,7 @@ These instructions apply to the entire repository.
 - Keep the `creat/cmd/` package structure in place for future commands.
 - Preserve and extend the config system in `creat/configs.py` unless a broader redesign is requested.
 - `intents/` is development file tree for project intents that are to be redefined and implemented to code by agents.
+    - do not modify `intents/**` unless you are working with intents phase
 
 # Stack
 
