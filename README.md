@@ -5,7 +5,7 @@ The previous scaffold-based project creation system has been removed.
 The repository now keeps only:
 
 - the core CLI shell
-- the JSON config loading and validation layer
+- the config loading and validation layer
 - the command-module skeleton under `creat/cmd/`
 
 The next implementation target is an AI-agent-supported project creation system.
@@ -21,6 +21,14 @@ Available now:
 
 - `creat config show`
 - `creat config init`
+
+Configuration resolution order:
+
+- `creat --config path/to/creat.json ...` or `creat --config path/to/creat.toml ...`
+- the user config at `~/.config/creat/creat.json` when it exists
+- model defaults, with the selected path kept as the active write target
+
+Commands and library code can read the active config through `creat.configs.get_config()` after startup initialization.
 
 Removed:
 

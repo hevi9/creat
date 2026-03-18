@@ -5,7 +5,7 @@ import typer
 
 from . import __version__
 from .cmd import config
-from .configs import Config, x_config, json_to_obj
+from .configs import init_config
 
 cli = typer.Typer(
     no_args_is_help=True,
@@ -24,6 +24,7 @@ def _version(value: bool) -> None:
 
 @cli.callback()
 def main(
+    ctx: typer.Context,
     _version: Annotated[
         Optional[bool],
         typer.Option(
@@ -32,19 +33,20 @@ def main(
             is_eager=True,
         ),
     ] = None,
-    config_path: Path = typer.Option(
-        Path("~/.config/creat/creat.json").expanduser(),
-        help="Path to config.",
-    ),
+    config_path: Annotated[
+        Optional[Path],
+        typer.Option(
+            "--config",
+            "--config-path",
+            help=(
+                "Path to config file. Supports JSON and TOML. If omitted, "
+                "the user config is loaded when present and defaults are used otherwise."
+            ),
+        ),
+    ] = None,
 ) -> None:
     """Load the active configuration."""
-    try:
-        config_data = json_to_obj(config_path, Config)
-    except FileNotFoundError:
-        config_data = Config()
-    # Keep the selected path authoritative for the active session.
-    config_data.config_path = config_path
-    x_config.init(config_data)
+    ctx.obj = init_config(config_path)
 
 
 if __name__ == "__main__":
