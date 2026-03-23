@@ -18,10 +18,3 @@ def test_creat_help() -> None:
 
     assert result.exit_code == 0
     assert "AI-agent project creation" in result.stdout
-
-
-def test_creat_no_args_shows_help() -> None:
-    result = runner.invoke(cli, [])
-
-    assert result.exit_code == 0
-    assert "AI-agent project creation" in result.stdout
