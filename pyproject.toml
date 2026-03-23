@@ -41,7 +41,7 @@ build-backend = "hatchling.build"
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 
-follow_imports = "silent"
+# follow_imports = "silent"
 warn_redundant_casts = true
 warn_unused_ignores = true
 disallow_any_generics = true
