@@ -2,7 +2,7 @@ UV := uv
 PIPX := pipx
 VERSION := $(shell sed -n 's/^version = "\(.*\)"/\1/p' pyproject.toml | head -n 1)
 PRE_COMMIT := pre-commit
-NAME := $(shell basename $(shell pwd))
+NAME := $(shell sed -n 's/^name = "\(.*\)"/\1/p' pyproject.toml | head -n 1)
 WHEEL := $(NAME)-$(VERSION)-py3-none-any.whl
 DISTDIR := dist
 GIT := git
@@ -34,6 +34,10 @@ clean:: ## Clean the repository
 	rm -rf .venv .doit.db dist
 
 deploy-user:: check ## Deploy the user
+	$(UV) build --wheel --out-dir=$(DISTDIR)
+	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
+
+install:: ## Build wheel and install with pipx
 	$(UV) build --wheel --out-dir=$(DISTDIR)
 	$(PIPX) install --force $(DISTDIR)/$(WHEEL)
 
