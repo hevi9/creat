@@ -4,7 +4,7 @@ The previous scaffold-based project creation system has been removed.
 
 The repository now keeps only:
 
-- the core CLI shell
+- the core CLI shells (`creat` and `creatctl`)
 - the config loading and validation layer
 - the command-module skeleton under `creat/cmd/`
 
@@ -17,14 +17,20 @@ The next implementation target is an AI-agent-supported project creation system.
 
 ## Current CLI Surface
 
+### creat (project creation)
+
+Currently a skeleton with `--version` support. Project creation commands will be added here.
+
+### creatctl (operations/admin)
+
 Available now:
 
-- `creat config show`
-- `creat config init`
+- `creatctl config show`
+- `creatctl config init`
 
 Configuration resolution order:
 
-- `creat --config path/to/creat.toml ...`
+- `creatctl --config path/to/creat.toml ...`
 - the user config at `~/.config/creat/creat.toml` when it exists
 - model defaults, with the selected path kept as the active write target
 
@@ -44,12 +50,13 @@ Set up the local environment:
 make local
 ```
 
-If you already activated `.venv`, `make local` will sync that active environment so the `creat` console script is available on your shell `PATH`.
+If you already activated `.venv`, `make local` will sync that active environment so the `creat` and `creatctl` console scripts are available on your shell `PATH`.
 
-Run the CLI:
+Run the CLIs:
 
 ```shell
 uv run creat --help
+uv run creatctl --help
 ```
 
 Run checks:

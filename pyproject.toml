@@ -15,6 +15,7 @@ dependencies = [
 
 [project.scripts]
 creat = 'creat.__main__:cli'
+creatctl = 'creat.ctl.__main__:cli'
 
 
 [dependency-groups]

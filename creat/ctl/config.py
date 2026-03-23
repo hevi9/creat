@@ -1,6 +1,6 @@
 import typer
 
-from ..configs import format_config, get_config, write_config
+from creat.configs import format_config, get_config, write_config
 
 cli = typer.Typer(name="config", no_args_is_help=True, help="Configuration commands.")
 

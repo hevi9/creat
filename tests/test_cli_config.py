@@ -3,7 +3,7 @@ from pathlib import Path
 
 from typer.testing import CliRunner
 
-from creat.__main__ import cli
+from creat.ctl.__main__ import cli
 
 runner = CliRunner()
 

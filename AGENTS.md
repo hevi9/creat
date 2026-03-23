@@ -5,9 +5,12 @@ These instructions apply to the entire repository.
 # Project
 
 - This repository is the CLI and config foundation for an AI-agent-supported project creation system.
+- Two console scripts are provided from a single package:
+    - `creat` — fast file/project creation CLI (currently a skeleton).
+    - `creatctl` — operations and admin CLI (config management, etc.).
 - The previous scaffold-based implementation has been removed.
-- Keep the `creat/cmd/` package structure in place for future commands.
-- Preserve and extend the config system in `creat/configs.py` unless a broader redesign is requested.
+- `creat/ctl/` is the `creatctl` package — command modules live here (e.g. `creat/ctl/config.py`).
+- Preserve and extend the config system in `creat/configs/` unless a broader redesign is requested.
 - `intents/` is development file tree for project intents that are to be redefined and implemented to code by agents.
     - do not modify `intents/**` unless you are working with intents phase
 
