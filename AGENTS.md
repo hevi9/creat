@@ -13,10 +13,13 @@ These instructions apply to the entire repository.
 
 # Stack
 
-- Python 3.11+
+- Python 3.12+
 - `uv` for environment and task execution
+    - reference: todo search
 - `typer` for the CLI
+    - reference: todo search
 - `pydantic` for config models and validation
+    - reference: todo search
 - `tomlkit` for TOML config parsing and writing
     - reference: https://tomlkit.readthedocs.io/en/stable/
 - `loguru` for logging

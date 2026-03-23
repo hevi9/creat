@@ -36,7 +36,7 @@ def test_config_show_uses_default_user_config_when_present(
 ) -> None:
     config_path = tmp_path / "creat.toml"
     config_path.write_text('project_system = "from-file"\n', encoding="utf-8")
-    monkeypatch.setattr("creat.configs.DEFAULT_CONFIG_PATH", config_path)
+    monkeypatch.setattr("creat.configs.config.DEFAULT_CONFIG_PATH", config_path)
 
     result = runner.invoke(cli, ["config", "show"])
 

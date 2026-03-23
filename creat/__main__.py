@@ -6,6 +6,7 @@ import typer
 from . import __version__
 from .cmd import config
 from .configs import init_config
+from .configs.cli import config_validation_cli_handler
 
 cli = typer.Typer(
     no_args_is_help=True,
@@ -46,7 +47,8 @@ def main(
     ] = None,
 ) -> None:
     """Load the active configuration."""
-    ctx.obj = init_config(config_path)
+    with config_validation_cli_handler():
+        ctx.obj = init_config(config_path)
 
 
 if __name__ == "__main__":
